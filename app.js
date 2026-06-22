@@ -65,7 +65,7 @@ function adicionarLinha() {
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro"></td>
         <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="P, M, G..." style="text-transform:uppercase;"></td>
         <td><input type="number" class="inp-qtd" value="1" min="1" style="width:70px;"></td>
-        <td style="text-align:center;"><button class="btn-text" onclick="this.closest('tr').remove()" title="Remover Linha">✖</button></td>
+        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove()" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
     `;
     tbodyItens.appendChild(tr);
 }
