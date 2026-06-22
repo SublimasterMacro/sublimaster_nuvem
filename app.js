@@ -66,7 +66,7 @@ function adicionarLinha() {
         <td><input type="text" class="inp-nome" placeholder="Opcional"></td>
         <td><input type="text" class="inp-numero" placeholder="Opcional"></td>
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro"></td>
-        <td><input type="text" class="inp-tamanho" placeholder="P, M, G..." style="text-transform:uppercase;"></td>
+        <td><input type="text" class="inp-tamanho" placeholder="P, M, G..." list="lista-tamanhos" style="text-transform:uppercase;"></td>
         <td><input type="number" class="inp-qtd" value="1" min="1" style="width:70px;"></td>
         <td style="text-align:center;"><button class="btn-text" onclick="this.closest('tr').remove()" title="Remover Linha">✖</button></td>
     `;
@@ -77,8 +77,10 @@ let editingOrderId = null;
 
 // 4. LANÇAR OU ATUALIZAR PEDIDO (POST/UPDATE)
 document.getElementById('btn-salvar').addEventListener('click', async () => {
-    const cliente = document.getElementById('cliente').value;
-    if (!cliente) return alert("Digite a referência ou nome do cliente!");
+    const cliente = document.getElementById('cliente').value.trim();
+    const referencia = document.getElementById('referencia').value.trim();
+    const observacoes = document.getElementById('observacoes').value.trim();
+    if (!cliente && !referencia) return alert("Digite a referência ou nome do cliente!");
 
     const linhas = tbodyItens.querySelectorAll('tr');
     let itens = [];
@@ -105,6 +107,8 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
             .from('sublimaster_pedidos')
             .update({
                 cliente: cliente,
+                referencia: referencia,
+                observacoes: observacoes,
                 dados_pedido: itens
             })
             .eq('id', editingOrderId);
@@ -128,7 +132,9 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
                 {
                     codigo_acesso: currentCode,
                     cliente: cliente,
-                    status: 'Pendente',
+                    referencia: referencia,
+                    observacoes: observacoes,
+                    status: 'PENDENTE',
                     dados_pedido: itens
                 }
             ]);
@@ -151,6 +157,8 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
 function cancelEditMode() {
     editingOrderId = null;
     document.getElementById('cliente').value = "";
+    document.getElementById('referencia').value = "";
+    document.getElementById('observacoes').value = "";
     tbodyItens.innerHTML = "";
     adicionarLinha();
     document.getElementById('btn-salvar').innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
@@ -167,7 +175,7 @@ async function loadOrders() {
     // Puxa apenas os pedidos deste código!
     const { data, error } = await db
         .from('sublimaster_pedidos')
-        .select('id, cliente, status, created_at, dados_pedido')
+        .select('id, cliente, referencia, observacoes, status, created_at, dados_pedido')
         .eq('codigo_acesso', currentCode)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -200,7 +208,8 @@ async function loadOrders() {
         li.innerHTML = `
             <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
                 <div>
-                    <strong style="font-size: 1.05rem;">${pedido.cliente}</strong>
+                    <strong style="font-size: 1.05rem;">${pedido.referencia ? pedido.referencia + ' - ' : ''}${pedido.cliente}</strong>
+                    ${pedido.observacoes ? `<div style="font-size:12px; color:#aaa; margin-top:4px;"><i class="ph ph-text-align-left"></i> ${pedido.observacoes}</div>` : ''}
                     <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px;">
                         <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
                         <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
@@ -226,7 +235,9 @@ window.editOrder = function(id) {
     if (!pedido) return;
 
     editingOrderId = id;
-    document.getElementById('cliente').value = pedido.cliente;
+    document.getElementById('cliente').value = pedido.cliente || "";
+    document.getElementById('referencia').value = pedido.referencia || "";
+    document.getElementById('observacoes').value = pedido.observacoes || "";
     tbodyItens.innerHTML = "";
     
     pedido.dados_pedido.forEach(item => {
@@ -235,7 +246,7 @@ window.editOrder = function(id) {
             <td><input type="text" class="inp-nome" value="${item.Nome || ''}"></td>
             <td><input type="text" class="inp-numero" value="${item.Numero || ''}"></td>
             <td><input type="text" class="inp-adic" value="${item.Adicional || ''}"></td>
-            <td><input type="text" class="inp-tamanho" value="${item.Tamanho || ''}" style="text-transform:uppercase;"></td>
+            <td><input type="text" class="inp-tamanho" value="${item.Tamanho || ''}" list="lista-tamanhos" style="text-transform:uppercase;"></td>
             <td><input type="number" class="inp-qtd" value="${item.Quantidade || 1}" min="1" style="width:70px;"></td>
             <td style="text-align:center;"><button class="btn-text" onclick="this.closest('tr').remove()" title="Remover Linha">✖</button></td>
         `;
@@ -268,11 +279,26 @@ window.deleteOrder = async function(id) {
     else loadOrders();
 };
 
-window.changeStatus = async function(id, currentStatus) {
-    const newStatus = prompt("Digite o novo status (ex: Pendente, Cancelado, Baixado):", currentStatus);
-    if (!newStatus || newStatus === currentStatus) return;
+let statusOrderId = null;
+const statusModal = document.getElementById('status-modal');
+
+window.changeStatus = function(id, currentStatus) {
+    statusOrderId = id;
+    document.getElementById('novo-status').value = currentStatus.toUpperCase() || "PENDENTE";
+    statusModal.classList.remove('hidden');
+};
+
+document.getElementById('btn-cancel-status').addEventListener('click', () => {
+    statusModal.classList.add('hidden');
+    statusOrderId = null;
+});
+
+document.getElementById('btn-save-status').addEventListener('click', async () => {
+    if (!statusOrderId) return;
+    const newStatus = document.getElementById('novo-status').value;
+    statusModal.classList.add('hidden');
     
-    const { error } = await db.from('sublimaster_pedidos').update({ status: newStatus }).eq('id', id);
+    const { error } = await db.from('sublimaster_pedidos').update({ status: newStatus }).eq('id', statusOrderId);
     if (error) alert("Erro ao mudar status: " + error.message);
     else loadOrders();
-};
+});
