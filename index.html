@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sublimaster | Portal Nuvem</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importando o SDK do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-screen" class="screen">
+        <div class="glass-panel login-box">
+            <h2 style="color: var(--accent); margin-top: 0;">Sublimaster SaaS</h2>
+            <p style="color: var(--text-hint); font-size: 14px; margin-bottom: 20px;">Portal do Cliente</p>
+            <input type="email" id="email" placeholder="Seu E-mail de Cliente">
+            <input type="password" id="senha" placeholder="Sua Senha">
+            <button id="btn-login" class="btn-primary">Entrar no Sistema</button>
+            <p id="login-msg" style="color: #ff5555; margin-top: 10px; font-size: 13px;"></p>
+        </div>
+    </div>
+
+    <!-- Dashboard (Oculto até logar) -->
+    <div id="dashboard-screen" class="screen hidden">
+        <header>
+            <h2 style="color: var(--accent); margin: 0;">Sublimaster Nuvem</h2>
+            <button id="btn-logout" class="btn-text">Sair (Logoff)</button>
+        </header>
+        <main>
+            <div class="glass-panel">
+                <h3 style="margin-top: 0;">Criar Novo Pedido</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; font-size: 13px; color: var(--text-hint); margin-bottom: 5px;">Referência / Cliente</label>
+                    <input type="text" id="cliente" placeholder="Ex: Time Águia F.C. / Pedido #1204">
+                </div>
+                
+                <table id="tabela-itens">
+                    <thead>
+                        <tr>
+                            <th>Tamanho</th>
+                            <th>Qtd</th>
+                            <th>Nome (Opcional)</th>
+                            <th>Número (Opcional)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-itens">
+                        <!-- Itens vão brotar aqui -->
+                    </tbody>
+                </table>
+                <button id="btn-add-item" class="btn-secondary">+ Adicionar Nova Linha</button>
+
+                <div style="margin-top: 30px; border-top: 1px solid #444; padding-top: 20px; text-align: right;">
+                    <button id="btn-salvar" class="btn-primary" style="width: auto; padding: 12px 30px; font-size: 15px;">☁️ Enviar para o CorelDRAW</button>
+                </div>
+                <p id="save-msg" style="color: var(--accent); margin-top: 10px; text-align:right; font-weight:bold;"></p>
+            </div>
+            
+            <div class="glass-panel" style="margin-top: 20px;">
+                <h3 style="margin-top: 0;">Últimos Pedidos</h3>
+                <ul id="lista-pedidos" class="order-list">
+                    <!-- Histórico via JS -->
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- O Cérebro -->
+    <script src="app.js"></script>
+</body>
+</html>

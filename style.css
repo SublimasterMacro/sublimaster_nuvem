@@ -1,0 +1,195 @@
+:root {
+    --bg-dark: #2A2A2A;
+    --bg-panel: rgba(45, 45, 45, 0.7);
+    --accent: #3A9F4A;
+    --accent-hover: #2A5C34;
+    --text-main: #E0E0E0;
+    --text-hint: #999999;
+    --border: #444444;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Centralizando o Login */
+#login-screen {
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #3a3a3a 0%, #1a1a1a 100%);
+}
+
+.login-box {
+    width: 320px;
+    text-align: center;
+}
+
+/* Efeito Premium de Vidro (Glassmorphism) */
+.glass-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Formulários */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #222;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(58, 159, 74, 0.2);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+.btn-secondary {
+    background: #444;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #555;
+}
+
+.btn-text {
+    background: transparent;
+    color: var(--text-hint);
+    padding: 8px;
+}
+
+.btn-text:hover {
+    color: #ff5555;
+}
+
+/* Estrutura do Dashboard */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+main {
+    padding: 30px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Tabela Dinâmica */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th {
+    text-align: left;
+    padding: 10px;
+    color: var(--text-hint);
+    font-size: 13px;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
+}
+
+td {
+    padding: 10px 5px;
+    border-bottom: 1px solid #333;
+}
+
+td input {
+    margin-bottom: 0;
+}
+
+/* Histórico */
+.order-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-list li {
+    padding: 15px 10px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+}
+
+.order-list li:last-child {
+    border-bottom: none;
+}
+
+.status-pendente { 
+    color: #FFA500; 
+    font-size: 13px;
+    font-weight: bold; 
+    background: rgba(255, 165, 0, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.status-baixado { 
+    color: var(--accent); 
+    font-size: 13px;
+    font-weight: bold; 
+    background: rgba(58, 159, 74, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
