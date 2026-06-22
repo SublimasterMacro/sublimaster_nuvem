@@ -470,15 +470,22 @@ td input {
     .action-buttons { flex-direction: column; }
     .action-buttons button { width: 100%; }
     
-    /* Adicionar rolagem horizontal na lista de histórico se necessário */
-    .history-card {
-        overflow-y: visible;
-        overflow-x: auto;
+    /* Organizar o card de Histórico no Mobile */
+    .order-list li > div { 
+        flex-direction: column !important; 
+        align-items: flex-start !important; 
+        gap: 0 !important;
     }
-    
-    .order-list {
-        min-width: 500px; /* Garante que a lista não quebre e sim crie rolagem */
+    .order-list li > div > div:nth-child(2) { 
+        flex-direction: row !important; 
+        width: 100%; 
+        justify-content: space-between !important; 
+        align-items: center !important;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255,255,255,0.05);
     }
+    .actions { margin-top: 0 !important; }
     
     /* A tabela de adicionar itens volta a ter rolagem horizontal normal */
     .table-responsive {
