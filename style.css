@@ -494,5 +494,6 @@ td input {
     .table-responsive {
         overflow-x: auto;
         overflow-y: hidden;
+        padding-bottom: 12px;
     }
 }
