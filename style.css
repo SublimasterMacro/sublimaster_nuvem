@@ -380,7 +380,6 @@ td input {
 .order-list li:hover {
     background: rgba(255, 255, 255, 0.04);
     border-color: var(--border-hover);
-    transform: translateX(4px);
 }
 
 /* Status Tags */
