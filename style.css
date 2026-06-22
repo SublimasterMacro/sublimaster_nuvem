@@ -364,6 +364,12 @@ td input {
     background: rgba(0,0,0,0.3);
 }
 
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
 /* Footer Actions */
 .action-footer {
     display: flex;
@@ -467,5 +473,8 @@ td input {
     
     .order-list li > div { flex-direction: column !important; align-items: flex-start !important; }
     .order-list li > div > div:nth-child(2) { align-items: flex-start !important; width: 100%; margin-top: 10px; }
-    .actions { width: 100%; justify-content: flex-end; margin-top: 5px; }
+    .actions { width: 100%; justify-content: flex-start; margin-top: 5px; }
+    
+    .action-buttons { flex-direction: column; }
+    .action-buttons button { width: 100%; }
 }

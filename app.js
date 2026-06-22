@@ -247,9 +247,9 @@ async function loadOrders() {
                 <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
                     <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
                     <div class="actions" style="display:flex; gap: 8px;">
-                        <button class="btn-text btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
-                        <button class="btn-text btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
-                        <button class="btn-text btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+                        <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
+                        <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
+                        <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
                     </div>
                 </div>
             </div>
