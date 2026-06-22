@@ -19,7 +19,6 @@ function checkSession() {
         showDashboard();
     }
 }
-checkSession();
 
 // 2. SISTEMA DE LOGIN (SALA / CÓDIGO)
 document.getElementById('btn-login').addEventListener('click', async () => {
@@ -58,9 +57,7 @@ function showDashboard() {
 }
 
 // 3. TABELA DINÂMICA DE TAMANHOS
-document.getElementById('btn-add-item').addEventListener('click', adicionarLinha);
-
-window.adicionarLinha = function() {
+function adicionarLinha() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
         <td><input type="text" class="inp-nome" placeholder="Opcional"></td>
@@ -72,6 +69,11 @@ window.adicionarLinha = function() {
     `;
     tbodyItens.appendChild(tr);
 }
+window.adicionarLinha = adicionarLinha; // expõe para o onclick no HTML
+
+document.getElementById('btn-add-item').addEventListener('click', adicionarLinha);
+
+checkSession();
 
 let editingOrderId = null;
 
