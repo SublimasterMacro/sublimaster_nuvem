@@ -73,6 +73,13 @@ window.adicionarLinha = adicionarLinha; // expõe para o onclick no HTML
 
 document.getElementById('btn-add-item').addEventListener('click', adicionarLinha);
 
+document.getElementById('btn-clear-list').addEventListener('click', () => {
+    if(confirm("Deseja realmente limpar todos os itens da tabela?")) {
+        tbodyItens.innerHTML = "";
+        adicionarLinha();
+    }
+});
+
 checkSession();
 
 let editingOrderId = null;
