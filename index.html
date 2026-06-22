@@ -4,60 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sublimaster | Portal Nuvem</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Phosphor Icons - clean and modern) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <link rel="stylesheet" href="style.css">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <div class="bg-animated"></div>
+
     <!-- Tela de Login -->
-    <div id="login-screen" class="screen">
+    <div id="login-screen" class="screen flex-center">
         <div class="glass-panel login-box">
-            <h2 style="color: var(--accent); margin-top: 0;">Sublimaster SaaS</h2>
-            <p style="color: var(--text-hint); font-size: 14px; margin-bottom: 20px;">Portal do Cliente</p>
-            <input type="text" id="codigo-acesso" placeholder="Digite o Código da Confecção" style="text-align: center; font-size: 18px; font-weight: bold; text-transform: uppercase;">
-            <button id="btn-login" class="btn-primary">Acessar Painel</button>
-            <p id="login-msg" style="color: #ff5555; margin-top: 10px; font-size: 13px;"></p>
+            <div class="logo-container">
+                <i class="ph ph-cloud-arrow-up text-accent" style="font-size: 48px; margin-bottom: 10px;"></i>
+                <h1 class="gradient-text">Sublimaster Nuvem</h1>
+                <p class="subtitle">Portal Exclusivo do Cliente</p>
+            </div>
+            
+            <div class="input-group">
+                <i class="ph ph-key icon-input"></i>
+                <input type="text" id="codigo-acesso" placeholder="Código da Confecção" autocomplete="off">
+            </div>
+            
+            <button id="btn-login" class="btn-primary btn-lg mt-4">
+                <span>Acessar Painel</span>
+                <i class="ph-bold ph-arrow-right"></i>
+            </button>
+            <p id="login-msg" class="msg-error mt-3"></p>
         </div>
     </div>
 
     <!-- Dashboard (Oculto até logar) -->
     <div id="dashboard-screen" class="screen hidden">
-        <header>
-            <h2 style="color: var(--accent); margin: 0;">Sublimaster Nuvem</h2>
-            <button id="btn-logout" class="btn-text">Sair (Logoff)</button>
+        <header class="glass-header">
+            <div class="header-content">
+                <div class="brand">
+                    <i class="ph-fill ph-cloud-check text-accent" style="font-size: 28px;"></i>
+                    <h2 class="gradient-text">Sublimaster Nuvem</h2>
+                </div>
+                <button id="btn-logout" class="btn-outline">
+                    <i class="ph ph-sign-out"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
         </header>
-        <main>
-            <div class="glass-panel">
-                <h3 style="margin-top: 0;">Criar Novo Pedido</h3>
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; font-size: 13px; color: var(--text-hint); margin-bottom: 5px;">Referência / Cliente</label>
-                    <input type="text" id="cliente" placeholder="Ex: Time Águia F.C. / Pedido #1204">
+        
+        <main class="dashboard-container">
+            <!-- Novo Pedido -->
+            <div class="glass-panel main-card slide-up">
+                <div class="card-header">
+                    <h3><i class="ph ph-plus-circle text-accent"></i> Criar Novo Pedido</h3>
                 </div>
                 
-                <table id="tabela-itens">
-                    <thead>
-                        <tr>
-                            <th>Tamanho</th>
-                            <th>Qtd</th>
-                            <th>Nome (Opcional)</th>
-                            <th>Número (Opcional)</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-itens">
-                        <!-- Itens vão brotar aqui -->
-                    </tbody>
-                </table>
-                <button id="btn-add-item" class="btn-secondary">+ Adicionar Nova Linha</button>
-
-                <div style="margin-top: 30px; border-top: 1px solid #444; padding-top: 20px; text-align: right;">
-                    <button id="btn-salvar" class="btn-primary" style="width: auto; padding: 12px 30px; font-size: 15px;">☁️ Enviar para o CorelDRAW</button>
+                <div class="input-group mb-4 mt-2">
+                    <i class="ph ph-user icon-input"></i>
+                    <input type="text" id="cliente" placeholder="Nome do Cliente ou Referência (Ex: Time Águia F.C.)">
                 </div>
-                <p id="save-msg" style="color: var(--accent); margin-top: 10px; text-align:right; font-weight:bold;"></p>
+                
+                <div class="table-responsive">
+                    <table id="tabela-itens">
+                        <thead>
+                            <tr>
+                                <th>Tamanho</th>
+                                <th>Qtd</th>
+                                <th>Nome <span class="opcional">(Opcional)</span></th>
+                                <th>Número <span class="opcional">(Opcional)</span></th>
+                                <th style="width: 50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-itens">
+                            <!-- Itens vão brotar aqui -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button id="btn-add-item" class="btn-secondary mt-3">
+                    <i class="ph ph-list-plus"></i> Adicionar Linha
+                </button>
+
+                <div class="action-footer mt-5">
+                    <p id="save-msg" class="msg-success mr-3"></p>
+                    <button id="btn-salvar" class="btn-primary btn-glow">
+                        <i class="ph ph-paper-plane-tilt"></i>
+                        <span>Enviar para Confecção</span>
+                    </button>
+                </div>
             </div>
             
-            <div class="glass-panel" style="margin-top: 20px;">
-                <h3 style="margin-top: 0;">Últimos Pedidos</h3>
+            <!-- Histórico -->
+            <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;">
+                <div class="card-header border-bottom mb-3">
+                    <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico Recente</h3>
+                </div>
                 <ul id="lista-pedidos" class="order-list">
                     <!-- Histórico via JS -->
                 </ul>
@@ -65,7 +111,6 @@
         </main>
     </div>
 
-    <!-- O Cérebro -->
     <script src="app.js"></script>
 </body>
 </html>
