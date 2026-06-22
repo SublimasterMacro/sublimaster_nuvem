@@ -263,11 +263,9 @@ button:active {
     padding: 32px 24px;
     width: 100%;
     
-    /* Configuração para fixar o topo e rolar só o histórico */
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 75px);
-    overflow: hidden;
+    /* Removida a trava de altura para permitir rolagem nativa da pagina inteira */
 }
 
 .main-card {
@@ -307,8 +305,6 @@ button:active {
 /* Table Design */
 .table-responsive {
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: 35vh; /* Ajuste para não deixar o card gigante */
     border-radius: 12px;
     border: 1px solid var(--border);
     background: rgba(0, 0, 0, 0.1);
@@ -342,9 +338,6 @@ th {
     letter-spacing: 0.05em;
     background: rgba(18, 18, 20, 0.95);
     border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 .opcional {
@@ -354,7 +347,7 @@ th {
 }
 
 td {
-    padding: 6px 12px;
+    padding: 2px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -364,7 +357,9 @@ tr:last-child td {
 
 td input {
     margin-bottom: 0;
-    padding: 8px 10px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    height: 32px;
     border-radius: 6px;
     background: rgba(0,0,0,0.3);
 }
