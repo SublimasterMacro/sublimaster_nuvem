@@ -157,14 +157,17 @@ async function loadOrders() {
         let totalPecas = 0;
         pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
 
+        const statusIcon = pedido.status === 'Pendente' ? '<i class="ph-fill ph-clock"></i>' : '<i class="ph-fill ph-check-circle"></i>';
+
         li.innerHTML = `
             <div>
-                <strong>${pedido.cliente}</strong>
-                <div style="font-size:12px; color:var(--text-hint); margin-top:4px;">
-                    ${dataStr} às ${horaStr} • ${totalPecas} Peça(s)
+                <strong style="font-size: 1.05rem;">${pedido.cliente}</strong>
+                <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px;">
+                    <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
+                    <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
                 </div>
             </div>
-            <span class="${statusClass}">${pedido.status}</span>
+            <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
         `;
         lista.appendChild(li);
     });
