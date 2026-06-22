@@ -60,11 +60,11 @@ function showDashboard() {
 function adicionarLinha() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-        <td><input type="text" class="inp-nome" placeholder="Opcional"></td>
-        <td><input type="text" class="inp-numero" placeholder="Opcional"></td>
-        <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro"></td>
-        <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="P, M, G..." style="text-transform:uppercase;"></td>
-        <td><input type="number" class="inp-qtd" value="1" min="1" style="width:70px;"></td>
+        <td><input type="text" class="inp-nome" placeholder="Nome (Opcional)"></td>
+        <td><input type="text" class="inp-numero" placeholder="Número"></td>
+        <td><input type="text" class="inp-adic" placeholder="Adicional (Ex: Goleiro)"></td>
+        <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="Tamanho (P, M, G)" style="text-transform:uppercase;"></td>
+        <td><input type="number" class="inp-qtd" value="1" min="1" placeholder="Qtd"></td>
         <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove()" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
     `;
     tbodyItens.appendChild(tr);
