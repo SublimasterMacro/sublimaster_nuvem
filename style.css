@@ -307,9 +307,24 @@ button:active {
 /* Table Design */
 .table-responsive {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 35vh; /* Ajuste para não deixar o card gigante */
     border-radius: 12px;
     border: 1px solid var(--border);
     background: rgba(0, 0, 0, 0.1);
+}
+
+/* Estilizar a barra de rolagem da tabela */
+.table-responsive::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
 
 table {
@@ -325,8 +340,11 @@ th {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(18, 18, 20, 0.95);
     border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .opcional {
