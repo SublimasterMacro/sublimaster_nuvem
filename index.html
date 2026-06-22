@@ -65,9 +65,36 @@
                 </div>
                 
                 <div class="input-group mb-4 mt-2">
-                    <i class="ph ph-user icon-input"></i>
-                    <input type="text" id="cliente" placeholder="Nome do Cliente ou Referência (Ex: Time Águia F.C.)">
+                <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                    <div class="input-group" style="flex:1; margin-bottom:0;">
+                        <i class="ph ph-hash icon-input"></i>
+                        <input type="text" id="referencia" placeholder="REFERÊNCIA / Nº DO PEDIDO">
+                    </div>
+                    <div class="input-group" style="flex:1; margin-bottom:0;">
+                        <i class="ph ph-user icon-input"></i>
+                        <input type="text" id="cliente" placeholder="CLIENTE DO CLIENTE">
+                    </div>
                 </div>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <i class="ph ph-text-align-left icon-input"></i>
+                    <input type="text" id="observacoes" placeholder="OBSERVAÇÕES (Opcional)">
+                </div>
+
+                <datalist id="lista-tamanhos">
+                    <option value="PP">
+                    <option value="P">
+                    <option value="M">
+                    <option value="G">
+                    <option value="GG">
+                    <option value="EXG">
+                    <option value="2A">
+                    <option value="4A">
+                    <option value="6A">
+                    <option value="8A">
+                    <option value="10A">
+                    <option value="12A">
+                    <option value="14A">
+                </datalist>
                 
                 <div class="table-responsive">
                     <table id="tabela-itens">
@@ -112,6 +139,25 @@
         </main>
     </div>
 
-    <script src="app.js?v=3"></script>
+    <!-- Modal de Status -->
+    <div id="status-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <h3 class="mb-3">Alterar Status</h3>
+            <select id="novo-status" class="form-select mb-3" style="width:100%; padding:10px; border-radius:5px; background:#4A4A4A; color:#E0E0E0; border:1px solid #555;">
+                <option value="PENDENTE">PENDENTE</option>
+                <option value="EM PRODUÇÃO">EM PRODUÇÃO</option>
+                <option value="AGUARDANDO APROVAÇÃO">AGUARDANDO APROVAÇÃO</option>
+                <option value="CONCLUÍDO">CONCLUÍDO</option>
+                <option value="ENTREGUE">ENTREGUE</option>
+                <option value="CANCELADO">CANCELADO</option>
+            </select>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button id="btn-cancel-status" class="btn-primary" style="background:#555;">Cancelar</button>
+                <button id="btn-save-status" class="btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=4"></script>
 </body>
 </html>
