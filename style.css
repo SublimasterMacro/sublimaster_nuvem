@@ -3,18 +3,19 @@
     --bg-dark: #121214;
     --bg-panel: rgba(32, 32, 36, 0.7);
     --bg-panel-hover: rgba(40, 40, 45, 0.8);
-    --accent: #00B37E; /* Modern neon green */
+    --accent: #00B37E;
+    /* Modern neon green */
     --accent-hover: #00875F;
     --accent-glow: rgba(0, 179, 126, 0.4);
-    
+
     --text-main: #E1E1E6;
     --text-hint: #8D8D99;
     --border: rgba(255, 255, 255, 0.08);
     --border-hover: rgba(255, 255, 255, 0.15);
-    
+
     --error: #F75A68;
     --warning: #FBA94C;
-    
+
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
 }
@@ -41,7 +42,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: 
+    background:
         radial-gradient(circle at 15% 50%, rgba(0, 179, 126, 0.08), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(0, 135, 95, 0.05), transparent 25%);
     z-index: -1;
@@ -64,13 +65,33 @@ body {
     display: none !important;
 }
 
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 16px; }
-.mt-4 { margin-top: 24px; }
-.mt-5 { margin-top: 32px; }
-.mb-3 { margin-bottom: 16px; }
-.mb-4 { margin-bottom: 24px; }
-.mr-3 { margin-right: 16px; }
+.mt-2 {
+    margin-top: 8px;
+}
+
+.mt-3 {
+    margin-top: 16px;
+}
+
+.mt-4 {
+    margin-top: 24px;
+}
+
+.mt-5 {
+    margin-top: 32px;
+}
+
+.mb-3 {
+    margin-bottom: 16px;
+}
+
+.mb-4 {
+    margin-bottom: 24px;
+}
+
+.mr-3 {
+    margin-right: 16px;
+}
 
 /* Glassmorphism Panels */
 .glass-panel {
@@ -84,7 +105,9 @@ body {
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -184,6 +207,7 @@ button:active {
 .btn-glow {
     box-shadow: 0 4px 15px var(--accent-glow);
 }
+
 .btn-glow:hover {
     box-shadow: 0 6px 20px rgba(0, 179, 126, 0.6);
     transform: translateY(-2px);
@@ -226,6 +250,7 @@ button:active {
     padding: 8px;
     border-radius: 8px;
 }
+
 .btn-icon-only:hover {
     color: var(--error);
     background: rgba(247, 90, 104, 0.1);
@@ -262,7 +287,7 @@ button:active {
     margin: 0 auto;
     padding: 32px 24px;
     width: 100%;
-    
+
     display: flex;
     flex-direction: column;
     /* Removida a trava de altura para permitir rolagem nativa da pagina inteira */
@@ -278,13 +303,16 @@ button:active {
     overflow-y: auto;
     margin-bottom: 20px;
 }
+
 /* Estilizar a barra de rolagem do histórico */
 .history-card::-webkit-scrollbar {
     width: 8px;
 }
+
 .history-card::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .history-card::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
@@ -315,9 +343,11 @@ button:active {
     width: 6px;
     height: 6px;
 }
+
 .table-responsive::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .table-responsive::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
@@ -361,7 +391,7 @@ td input {
     font-size: 0.85rem;
     height: 32px;
     border-radius: 6px;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .action-buttons {
@@ -412,21 +442,29 @@ td input {
     gap: 6px;
 }
 
-.status-pendente { 
-    color: var(--warning); 
+.status-pendente {
+    color: var(--warning);
     background: rgba(251, 169, 76, 0.1);
     border: 1px solid rgba(251, 169, 76, 0.2);
 }
 
-.status-baixado { 
-    color: var(--accent); 
+.status-baixado {
+    color: var(--accent);
     background: rgba(0, 179, 126, 0.1);
     border: 1px solid rgba(0, 179, 126, 0.2);
 }
 
 /* Messages */
-.msg-error { color: var(--error); font-size: 0.9rem; }
-.msg-success { color: var(--accent); font-size: 0.95rem; font-weight: 500; }
+.msg-error {
+    color: var(--error);
+    font-size: 0.9rem;
+}
+
+.msg-success {
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
 
 /* Animations */
 .slide-up {
@@ -443,10 +481,23 @@ td input {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #444; }
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
 
 .flex-row {
     display: flex;
@@ -457,39 +508,64 @@ td input {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .dashboard-container { 
-        padding: 16px; 
+    .dashboard-container {
+        padding: 16px;
         height: auto;
         overflow: visible;
         display: block;
     }
-    .main-card { padding: 16px 4px; }
-    .action-footer { flex-direction: column; gap: 16px; align-items: stretch; }
-    #btn-salvar { width: 100%; }
-    .flex-row { flex-direction: column; }
-    .action-buttons { flex-direction: column; }
-    .action-buttons button { width: 100%; }
-    
+
+    .main-card {
+        padding: 16px 4px;
+    }
+
+    .action-footer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    #btn-salvar {
+        width: 100%;
+    }
+
+    .flex-row {
+        flex-direction: column;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+
     /* Organizar o card de Histórico no Mobile */
     .order-list li {
         padding: 12px;
     }
-    .order-list li > div { 
-        flex-direction: column !important; 
-        align-items: flex-start !important; 
+
+    .order-list li>div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
         gap: 0 !important;
     }
-    .order-list li > div > div:nth-child(2) { 
-        flex-direction: row !important; 
-        width: 100%; 
-        justify-content: space-between !important; 
+
+    .order-list li>div>div:nth-child(2) {
+        flex-direction: row !important;
+        width: 100%;
+        justify-content: space-between !important;
         align-items: center !important;
         margin-top: 10px;
         padding-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .actions { margin-top: 0 !important; }
-    
+
+    .actions {
+        margin-top: 0 !important;
+    }
+
     /* A tabela de adicionar itens volta a ter rolagem horizontal normal */
     .table-responsive {
         overflow-x: auto;
