@@ -1,4 +1,3 @@
-// Mágica! A Chave foi quebrada e a URL descoberta a partir dela.
 const SUPABASE_URL = 'https://ckrxvzdpgintxnuzegxg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcnh2emRwZ2dpbnR4bnV6ZWd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0OTk5ODEsImV4cCI6MjA5MTA3NTk4MX0.M-SLZdLROnynTyYE-iimwlrWFCMAizVr-z0X7suw1jg';
 
@@ -10,43 +9,44 @@ const dashboardScreen = document.getElementById('dashboard-screen');
 const tbodyItens = document.getElementById('tbody-itens');
 const msgLogin = document.getElementById('login-msg');
 
-let currentUser = null;
+let currentCode = null;
 
-// 1. CHECAR SESSÃO AO ABRIR O SITE
-async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        currentUser = session.user;
+// 1. CHECAR SE JÁ TEM CÓDIGO SALVO
+function checkSession() {
+    const savedCode = localStorage.getItem('sublimaster_codigo');
+    if (savedCode) {
+        currentCode = savedCode;
         showDashboard();
     }
 }
 checkSession();
 
-// 2. SISTEMA DE LOGIN
+// 2. SISTEMA DE LOGIN (SALA / CÓDIGO)
 document.getElementById('btn-login').addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('senha').value;
+    const inputCode = document.getElementById('codigo-acesso').value.trim().toUpperCase();
     
-    msgLogin.innerText = "Conectando aos servidores...";
+    if (inputCode.length < 3) {
+        msgLogin.innerText = "Digite um código válido (mínimo 3 letras).";
+        return;
+    }
+    
+    msgLogin.innerText = "Entrando...";
     msgLogin.style.color = "#E0E0E0";
     
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (error) {
-        msgLogin.style.color = "#ff5555";
-        msgLogin.innerText = "Erro: " + error.message;
-    } else {
-        currentUser = data.user;
-        showDashboard();
-    }
+    // Salva o código localmente e entra
+    currentCode = inputCode;
+    localStorage.setItem('sublimaster_codigo', currentCode);
+    showDashboard();
 });
 
 // LOGOUT
 document.getElementById('btn-logout').addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('sublimaster_codigo');
     loginScreen.classList.remove('hidden');
     dashboardScreen.classList.add('hidden');
-    currentUser = null;
+    currentCode = null;
+    document.getElementById('codigo-acesso').value = "";
+    msgLogin.innerText = "";
 });
 
 // TROCAR TELA
@@ -54,7 +54,6 @@ function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
     loadOrders();
-    // Se a tabela estiver vazia, adiciona a primeira linha
     if(tbodyItens.children.length === 0) adicionarLinha();
 }
 
@@ -81,7 +80,6 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
     const linhas = tbodyItens.querySelectorAll('tr');
     let itens = [];
 
-    // Lendo a tabela
     linhas.forEach(tr => {
         const tamanho = tr.querySelector('.inp-tamanho').value.trim().toUpperCase();
         const qtd = parseInt(tr.querySelector('.inp-qtd').value) || 1;
@@ -96,14 +94,14 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
     if (itens.length === 0) return alert("Adicione pelo menos um tamanho!");
 
     const msg = document.getElementById('save-msg');
-    msg.innerText = "Lançando pedido no banco de dados...";
+    msg.innerText = "Enviando pedido...";
 
-    // Inserindo no Supabase (Mágica!)
+    // Insere o pedido vinculado ao Código de Acesso atual
     const { data, error } = await supabase
         .from('sublimaster_pedidos')
         .insert([
             {
-                user_id: currentUser.id,
+                codigo_acesso: currentCode,
                 cliente: cliente,
                 status: 'Pendente',
                 dados_pedido: itens
@@ -117,25 +115,25 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
         msg.style.color = "var(--accent)";
         msg.innerText = "✅ Sucesso! O CorelDRAW já pode baixar este pedido.";
         
-        // Limpar tela para o próximo pedido
         document.getElementById('cliente').value = "";
         tbodyItens.innerHTML = "";
         adicionarLinha();
-        loadOrders(); // Atualiza histórico
+        loadOrders(); 
         
         setTimeout(() => msg.innerText = "", 4000);
     }
 });
 
-// 5. HISTÓRICO DE PEDIDOS (GET)
+// 5. HISTÓRICO DE PEDIDOS DO CÓDIGO (GET)
 async function loadOrders() {
     const lista = document.getElementById('lista-pedidos');
-    lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico...</p>";
+    lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
 
-    // Graças ao RLS (Row Level Security), o cliente só vai ver os pedidos dele!
+    // Puxa apenas os pedidos deste código!
     const { data, error } = await supabase
         .from('sublimaster_pedidos')
         .select('cliente, status, created_at, dados_pedido')
+        .eq('codigo_acesso', currentCode)
         .order('created_at', { ascending: false })
         .limit(10);
 
@@ -146,7 +144,7 @@ async function loadOrders() {
 
     lista.innerHTML = "";
     if (data.length === 0) {
-        lista.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum pedido foi lançado ainda.</p>";
+        lista.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum pedido foi enviado para este código ainda.</p>";
         return;
     }
 
@@ -156,7 +154,6 @@ async function loadOrders() {
         const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         const statusClass = pedido.status === 'Pendente' ? 'status-pendente' : 'status-baixado';
         
-        // Quantidade total de peças no array JSON
         let totalPecas = 0;
         pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
 
