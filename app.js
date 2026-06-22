@@ -299,14 +299,14 @@ window.deleteOrder = async function(id) {
 
 window.changeStatus = async function(id, currentStatus) {
     const statuses = ['Pendente', 'Baixado', 'Cancelado', 'Produção', 'Concluído'];
-    let options = statuses.map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
+    let options = statuses.map(s => `<option value="${s}" style="background:#202024; color:#E1E1E6;" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
     
     const modal = document.createElement('div');
     modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;";
     modal.innerHTML = `
         <div class="glass-panel" style="width:300px; text-align:center;">
             <h3 style="margin-bottom:15px; font-weight:600;">Alterar Status</h3>
-            <select id="new-status-select" style="width:100%; padding:12px; border-radius:8px; margin-bottom:20px; background:var(--bg-main); color:var(--text-main); border:1px solid var(--border); font-size:1rem; outline:none;">
+            <select id="new-status-select" style="width:100%; padding:12px; border-radius:8px; margin-bottom:20px; background:var(--bg-dark); color:var(--text-main); border:1px solid var(--border); font-size:1rem; outline:none; cursor:pointer;">
                 ${options}
             </select>
             <div style="display:flex; gap:10px;">
