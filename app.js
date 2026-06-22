@@ -217,16 +217,14 @@ async function loadOrders() {
         }
 
         let htmlItens = `<div style="margin-top: 10px; display:flex; flex-wrap:wrap; gap:6px;">`;
+        let agrupado = {};
         pedido.dados_pedido.forEach(item => {
-            let desc = `${item.Quantidade}x ${item.Tamanho}`;
-            let extras = [];
-            if (item.Nome) extras.push(item.Nome);
-            if (item.Numero) extras.push(`Nº ${item.Numero}`);
-            if (item.Adicional) extras.push(item.Adicional);
-            if (extras.length > 0) desc += ` (${extras.join(', ')})`;
-            
-            htmlItens += `<span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #ccc; border: 1px solid rgba(255,255,255,0.1);">${desc}</span>`;
+            let t = item.Tamanho || '?';
+            agrupado[t] = (agrupado[t] || 0) + (item.Quantidade || 1);
         });
+        for (let t in agrupado) {
+            htmlItens += `<span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #ccc; border: 1px solid rgba(255,255,255,0.1);">${agrupado[t]}x ${t}</span>`;
+        }
         htmlItens += `</div>`;
 
         li.innerHTML = `
