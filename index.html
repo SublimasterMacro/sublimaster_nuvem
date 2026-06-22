@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=5">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -64,7 +64,7 @@
                     <h3><i class="ph ph-plus-circle text-accent"></i> Criar Novo Pedido</h3>
                 </div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
+                <div class="flex-row">
                     <div class="input-group" style="flex: 1; margin: 0;">
                         <i class="ph ph-hash icon-input"></i>
                         <input type="text" id="referencia" placeholder="Ref. / Nº (Ex: PED-100)">
@@ -116,7 +116,7 @@
             </div>
             
             <!-- Histórico -->
-            <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;">
+            <div class="glass-panel main-card history-card mt-4 slide-up" style="animation-delay: 0.1s;">
                 <div class="card-header border-bottom mb-3">
                     <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico Recente</h3>
                 </div>
