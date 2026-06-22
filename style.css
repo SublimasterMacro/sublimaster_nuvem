@@ -458,12 +458,12 @@ td input {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard-container { 
-        padding: 16px; 
+        padding: 6px; 
         height: auto;
         overflow: visible;
         display: block;
     }
-    .main-card { padding: 20px; }
+    .main-card { padding: 12px; }
     .action-footer { flex-direction: column; gap: 16px; align-items: stretch; }
     #btn-salvar { width: 100%; }
     .flex-row { flex-direction: column; }
