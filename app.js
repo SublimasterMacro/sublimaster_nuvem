@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://ckrxvzdpgintxnuzegxg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcnh2emRwZ2dpbnR4bnV6ZWd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0OTk5ODEsImV4cCI6MjA5MTA3NTk4MX0.M-SLZdLROnynTyYE-iimwlrWFCMAizVr-z0X7suw1jg';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Referências HTML
 const loginScreen = document.getElementById('login-screen');
@@ -97,7 +97,7 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
     msg.innerText = "Enviando pedido...";
 
     // Insere o pedido vinculado ao Código de Acesso atual
-    const { data, error } = await supabase
+    const { data, error } = await db
         .from('sublimaster_pedidos')
         .insert([
             {
@@ -130,7 +130,7 @@ async function loadOrders() {
     lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
 
     // Puxa apenas os pedidos deste código!
-    const { data, error } = await supabase
+    const { data, error } = await db
         .from('sublimaster_pedidos')
         .select('cliente, status, created_at, dados_pedido')
         .eq('codigo_acesso', currentCode)
