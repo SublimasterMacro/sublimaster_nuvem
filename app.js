@@ -223,17 +223,6 @@ async function loadOrders() {
             nomeVisual = refP + pts[1];
         }
 
-        let htmlItens = `<div style="margin-top: 10px; display:flex; flex-wrap:wrap; gap:6px;">`;
-        let agrupado = {};
-        pedido.dados_pedido.forEach(item => {
-            let t = item.Tamanho || '?';
-            agrupado[t] = (agrupado[t] || 0) + (item.Quantidade || 1);
-        });
-        for (let t in agrupado) {
-            htmlItens += `<span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #ccc; border: 1px solid rgba(255,255,255,0.1);">${agrupado[t]}x ${t}</span>`;
-        }
-        htmlItens += `</div>`;
-
         li.innerHTML = `
             <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
                 <div style="flex: 1; min-width: 200px;">
@@ -242,7 +231,6 @@ async function loadOrders() {
                         <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
                         <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
                     </div>
-                    ${htmlItens}
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
                     <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
