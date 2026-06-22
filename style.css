@@ -471,6 +471,9 @@ td input {
     .action-buttons button { width: 100%; }
     
     /* Organizar o card de Histórico no Mobile */
+    .order-list li {
+        padding: 12px;
+    }
     .order-list li > div { 
         flex-direction: column !important; 
         align-items: flex-start !important; 
@@ -481,8 +484,8 @@ td input {
         width: 100%; 
         justify-content: space-between !important; 
         align-items: center !important;
-        margin-top: 16px;
-        padding-top: 16px;
+        margin-top: 10px;
+        padding-top: 10px;
         border-top: 1px solid rgba(255,255,255,0.05);
     }
     .actions { margin-top: 0 !important; }
