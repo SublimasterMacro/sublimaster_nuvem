@@ -52,7 +52,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
 function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
-    // window.setupRealtimeSubscription(); // DESATIVADO TEMPORARIAMENTE PARA DEBUG
+    window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
@@ -82,7 +82,7 @@ document.getElementById('btn-clear-list').addEventListener('click', () => {
     }
 });
 
-checkSession();
+// checkSession() é chamado no final do arquivo para garantir que todas as funções já foram definidas
 
 let editingOrderId = null;
 
@@ -186,36 +186,28 @@ let realtimeSubscription = null;
 
 // Configura o ouvinte em tempo real para atualizar a lista de pedidos automaticamente
 window.setupRealtimeSubscription = function() {
-    try {
-        if (realtimeSubscription) {
-            db.removeChannel(realtimeSubscription);
-        }
-        
-        // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
-        realtimeSubscription = db.channel('custom-all-channel')
-            .on(
-                'postgres_changes',
-                { event: '*', schema: 'public', table: 'sublimaster_pedidos' },
-                (payload) => {
-                    console.log('Mudança detectada no banco de dados:', payload);
-                    // Apenas recarrega a lista se o usuário já estiver com um código carregado
-                    if (currentCode) {
-                        window.loadOrders();
-                    }
-                }
-            )
-            .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('Realtime conectado com sucesso!');
-                }
-            });
-    } catch (e) {
-        console.warn("Erro ao iniciar Supabase Realtime (WebSockets podem estar bloqueados):", e);
+    if (realtimeSubscription) {
+        db.removeChannel(realtimeSubscription);
     }
+    
+    // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
+    realtimeSubscription = db.channel('custom-all-channel')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'sublimaster_pedidos' },
+            (payload) => {
+                console.log('Mudança detectada no banco de dados:', payload);
+                // Apenas recarrega a lista se o usuário já estiver com um código carregado
+                if (currentCode) {
+                    window.loadOrders();
+                }
+            }
+        )
+        .subscribe();
 }
 
 // 5. HISTÓRICO DE PEDIDOS DO CÓDIGO (GET)
-window.loadOrders = async function() {
+async function loadOrders() {
     if (!currentCode) return;
     
     const lista = document.getElementById('lista-pedidos');
@@ -250,15 +242,14 @@ window.loadOrders = async function() {
     window.loadedOrders = data;
 
     data.forEach(pedido => {
-        try {
-            const li = document.createElement('li');
-            const dataStr = new Date(pedido.created_at).toLocaleDateString('pt-BR');
-            const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const li = document.createElement('li');
+        const dataStr = new Date(pedido.created_at).toLocaleDateString('pt-BR');
+        const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-            let totalPecas = 0;
-            if (pedido.dados_pedido && Array.isArray(pedido.dados_pedido)) {
-                pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
-            }
+        let totalPecas = 0;
+        if (pedido.dados_pedido && Array.isArray(pedido.dados_pedido)) {
+            pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
+        }
 
         let statusClass = 'status-default';
         let statusIcon = '<i class="ph-fill ph-info"></i>';
@@ -354,9 +345,6 @@ window.loadOrders = async function() {
             `;
             li.innerHTML = liHtml;
             lista.appendChild(li);
-        }
-        } catch (err) {
-            lista.innerHTML += `<li style="color:red; font-size:12px;">CRASH: ${err.message} no pedido ${pedido.id}</li>`;
         }
     });
 }
@@ -576,3 +564,6 @@ async function suggestNextReference() {
         document.getElementById('link-referencia').value = "1";
     }
 }
+
+// Iniciar a sessão SOMENTE após todas as funções estarem definidas
+checkSession();
