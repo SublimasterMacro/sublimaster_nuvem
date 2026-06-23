@@ -550,6 +550,14 @@ async function suggestNextReference() {
         const currentYear = new Date().getFullYear().toString();
         const lastYear = (new Date().getFullYear() - 1).toString();
         
+        // Se o único número for o próprio ano, e houver texto depois (Ex: PED-2026-INTERCLASSE)
+        // Isso significa que ele não usou número sequencial, então forçamos o reinício do padrão
+        if ((numStr === currentYear || numStr === lastYear) && suffix.trim() !== "") {
+            document.getElementById('referencia').value = `PED-${currentYear}-0001`;
+            document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
+            return;
+        }
+        
         let finalPrefix = prefix;
         let nextNumStr = "";
 
