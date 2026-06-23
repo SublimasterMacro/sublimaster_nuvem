@@ -493,7 +493,8 @@ async function suggestNextReference() {
             nextNumStr = nextNumStr.padStart(numStr.length, '0');
         }
         
-        const nextRef = prefix + nextNumStr + suffix;
+        // Remove o sufixo (tudo o que o usuário digitar APÓS o número) para limpar o próximo
+        const nextRef = prefix + nextNumStr;
         document.getElementById('referencia').value = nextRef;
         document.getElementById('link-referencia').value = nextRef;
     } else {
