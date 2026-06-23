@@ -242,14 +242,15 @@ window.loadOrders = async function() {
     window.loadedOrders = data;
 
     data.forEach(pedido => {
-        const li = document.createElement('li');
-        const dataStr = new Date(pedido.created_at).toLocaleDateString('pt-BR');
-        const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        try {
+            const li = document.createElement('li');
+            const dataStr = new Date(pedido.created_at).toLocaleDateString('pt-BR');
+            const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-        let totalPecas = 0;
-        if (pedido.dados_pedido && Array.isArray(pedido.dados_pedido)) {
-            pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
-        }
+            let totalPecas = 0;
+            if (pedido.dados_pedido && Array.isArray(pedido.dados_pedido)) {
+                pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
+            }
 
         let statusClass = 'status-default';
         let statusIcon = '<i class="ph-fill ph-info"></i>';
@@ -345,6 +346,9 @@ window.loadOrders = async function() {
             `;
             li.innerHTML = liHtml;
             lista.appendChild(li);
+        }
+        } catch (err) {
+            lista.innerHTML += `<li style="color:red; font-size:12px;">CRASH: ${err.message} no pedido ${pedido.id}</li>`;
         }
     });
 }
