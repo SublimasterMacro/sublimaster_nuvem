@@ -52,7 +52,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
 function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
-    window.setupRealtimeSubscription();
+    // window.setupRealtimeSubscription(); // DESATIVADO TEMPORARIAMENTE PARA DEBUG
     loadOrders();
     suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
@@ -186,24 +186,32 @@ let realtimeSubscription = null;
 
 // Configura o ouvinte em tempo real para atualizar a lista de pedidos automaticamente
 window.setupRealtimeSubscription = function() {
-    if (realtimeSubscription) {
-        db.removeChannel(realtimeSubscription);
-    }
-    
-    // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
-    realtimeSubscription = db.channel('custom-all-channel')
-        .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'sublimaster_pedidos' },
-            (payload) => {
-                console.log('Mudança detectada no banco de dados:', payload);
-                // Apenas recarrega a lista se o usuário já estiver com um código carregado
-                if (currentCode) {
-                    window.loadOrders();
+    try {
+        if (realtimeSubscription) {
+            db.removeChannel(realtimeSubscription);
+        }
+        
+        // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
+        realtimeSubscription = db.channel('custom-all-channel')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'sublimaster_pedidos' },
+                (payload) => {
+                    console.log('Mudança detectada no banco de dados:', payload);
+                    // Apenas recarrega a lista se o usuário já estiver com um código carregado
+                    if (currentCode) {
+                        window.loadOrders();
+                    }
                 }
-            }
-        )
-        .subscribe();
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('Realtime conectado com sucesso!');
+                }
+            });
+    } catch (e) {
+        console.warn("Erro ao iniciar Supabase Realtime (WebSockets podem estar bloqueados):", e);
+    }
 }
 
 // 5. HISTÓRICO DE PEDIDOS DO CÓDIGO (GET)
