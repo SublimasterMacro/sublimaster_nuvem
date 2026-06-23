@@ -181,10 +181,10 @@ function renderReadonlyTable(itens) {
         tr.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
         
         tr.innerHTML = `
-            <td style="padding: 12px 10px; font-weight: 600; color: var(--text-main);">${item.Tamanho}</td>
             <td style="padding: 12px 10px;">${item.Nome || '-'}</td>
             <td style="padding: 12px 10px;">${item.Numero || '-'}</td>
             <td style="padding: 12px 10px;">${item.Adicional || '-'}</td>
+            <td style="padding: 12px 10px; font-weight: 600; color: var(--text-main);">${item.Tamanho}</td>
             <td style="padding: 12px 10px; text-align: center; font-weight: 600;">${item.Quantidade}</td>
         `;
         tbody.appendChild(tr);
