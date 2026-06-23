@@ -55,8 +55,8 @@ async function initClientApp() {
     loadingScreen.classList.add('hidden');
     clientScreen.classList.remove('hidden');
 
-    // Permite edição APENAS se estiver aguardando preenchimento
-    if (data.status === 'Aguardando Preenchimento') {
+    // Se estiver aguardando preenchimento ou pendente, mostra o formulário de edição
+    if (data.status === 'Aguardando Preenchimento' || data.status === 'Pendente') {
         formContainer.classList.remove('hidden');
         readonlyContainer.classList.add('hidden');
         
