@@ -198,7 +198,7 @@ window.setupRealtimeSubscription = function() {
             (payload) => {
                 console.log('Mudança detectada no banco de dados:', payload);
                 // Apenas recarrega a lista se o usuário já estiver com um código carregado
-                if (window.currentCode) {
+                if (currentCode) {
                     window.loadOrders();
                 }
             }
@@ -247,7 +247,9 @@ window.loadOrders = async function() {
         const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
         let totalPecas = 0;
-        pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
+        if (pedido.dados_pedido && Array.isArray(pedido.dados_pedido)) {
+            pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
+        }
 
         let statusClass = 'status-default';
         let statusIcon = '<i class="ph-fill ph-info"></i>';
