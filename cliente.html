@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="style.css?v=18">
+    <link rel="stylesheet" href="style.css?v=19">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -25,15 +25,17 @@
     </div>
 
     <!-- Tela do Cliente (Editável ou Somente Leitura) -->
-    <div id="client-screen" class="screen hidden" style="padding: 20px;">
-        <header style="max-width: 800px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
-            <div class="brand" style="text-align: center;">
-                <i class="ph-fill ph-cloud-check text-accent" style="font-size: 32px;"></i>
-                <h2 class="gradient-text" style="font-size: 1.8rem;">Portal do Pedido</h2>
+    <div id="client-screen" class="screen hidden">
+        <header class="glass-header">
+            <div class="header-content" style="justify-content: center;">
+                <div class="brand">
+                    <i class="ph-fill ph-cloud-check text-accent" style="font-size: 28px;"></i>
+                    <h2 class="gradient-text">Portal do Pedido</h2>
+                </div>
             </div>
         </header>
 
-        <main style="max-width: 800px; margin: 0 auto; width: 100%;">
+        <main class="dashboard-container">
             <div class="glass-panel main-card slide-up">
                 
                 <div class="card-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px;">
