@@ -526,8 +526,9 @@ async function suggestNextReference() {
         .single();
 
     if (error || !data) {
-        document.getElementById('referencia').value = "1";
-        document.getElementById('link-referencia').value = "1";
+        const currentYear = new Date().getFullYear();
+        document.getElementById('referencia').value = `PED-${currentYear}-0001`;
+        document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
         return;
     }
 
@@ -546,22 +547,35 @@ async function suggestNextReference() {
         const numStr = match[2];
         const suffix = match[3];
         
-        // Mantém os zeros à esquerda (ex: 004 -> 005)
-        const isPadded = numStr.startsWith('0') && numStr.length > 1;
-        const nextNum = parseInt(numStr, 10) + 1;
-        let nextNumStr = nextNum.toString();
-        if (isPadded) {
-            nextNumStr = nextNumStr.padStart(numStr.length, '0');
+        const currentYear = new Date().getFullYear().toString();
+        const lastYear = (new Date().getFullYear() - 1).toString();
+        
+        let finalPrefix = prefix;
+        let nextNumStr = "";
+
+        // Verifica se a referência continha o ano anterior (virada de ano)
+        if (prefix.includes(lastYear)) {
+            finalPrefix = prefix.replace(lastYear, currentYear);
+            nextNumStr = "1".padStart(numStr.length, '0'); // Reseta a contagem
+        } else {
+            // Mantém os zeros à esquerda (ex: 004 -> 005)
+            const isPadded = numStr.startsWith('0') && numStr.length > 1;
+            const nextNum = parseInt(numStr, 10) + 1;
+            nextNumStr = nextNum.toString();
+            if (isPadded) {
+                nextNumStr = nextNumStr.padStart(numStr.length, '0');
+            }
         }
         
         // Remove o sufixo (tudo o que o usuário digitar APÓS o número) para limpar o próximo
-        const nextRef = prefix + nextNumStr;
+        const nextRef = finalPrefix + nextNumStr;
         document.getElementById('referencia').value = nextRef;
         document.getElementById('link-referencia').value = nextRef;
     } else {
-        // Se não encontrou número nenhum, sugere "1"
-        document.getElementById('referencia').value = "1";
-        document.getElementById('link-referencia').value = "1";
+        // Se não encontrou número nenhum, sugere o padrão inicial
+        const currentYear = new Date().getFullYear();
+        document.getElementById('referencia').value = `PED-${currentYear}-0001`;
+        document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
     }
 }
 
