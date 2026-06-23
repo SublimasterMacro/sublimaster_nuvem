@@ -454,6 +454,36 @@ td input {
     border: 1px solid rgba(0, 179, 126, 0.2);
 }
 
+.status-producao {
+    color: #4da6ff;
+    background: rgba(77, 166, 255, 0.1);
+    border: 1px solid rgba(77, 166, 255, 0.2);
+}
+
+.status-concluido {
+    color: #b366ff;
+    background: rgba(179, 102, 255, 0.1);
+    border: 1px solid rgba(179, 102, 255, 0.2);
+}
+
+.status-entregue {
+    color: #20c997;
+    background: rgba(32, 201, 151, 0.1);
+    border: 1px solid rgba(32, 201, 151, 0.2);
+}
+
+.status-cancelado {
+    color: #ff5555;
+    background: rgba(255, 85, 85, 0.1);
+    border: 1px solid rgba(255, 85, 85, 0.2);
+}
+
+.status-aguardando {
+    color: #aaaaaa;
+    background: rgba(170, 170, 170, 0.1);
+    border: 1px solid rgba(170, 170, 170, 0.2);
+}
+
 /* Messages */
 .msg-error {
     color: var(--error);

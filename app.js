@@ -52,6 +52,7 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
 function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
+    window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
@@ -180,8 +181,35 @@ function cancelEditMode() {
     if (btnCancel) btnCancel.remove();
 }
 
+// Variável global para armazenar a assinatura Realtime
+let realtimeSubscription = null;
+
+// Configura o ouvinte em tempo real para atualizar a lista de pedidos automaticamente
+window.setupRealtimeSubscription = function() {
+    if (realtimeSubscription) {
+        db.removeChannel(realtimeSubscription);
+    }
+    
+    // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
+    realtimeSubscription = db.channel('custom-all-channel')
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'sublimaster_pedidos' },
+            (payload) => {
+                console.log('Mudança detectada no banco de dados:', payload);
+                // Apenas recarrega a lista se o usuário já estiver com um código carregado
+                if (window.currentCode) {
+                    window.loadOrders();
+                }
+            }
+        )
+        .subscribe();
+}
+
 // 5. HISTÓRICO DE PEDIDOS DO CÓDIGO (GET)
-async function loadOrders() {
+window.loadOrders = async function() {
+    if (!currentCode) return;
+    
     const lista = document.getElementById('lista-pedidos');
     lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
 
@@ -217,12 +245,43 @@ async function loadOrders() {
         const li = document.createElement('li');
         const dataStr = new Date(pedido.created_at).toLocaleDateString('pt-BR');
         const horaStr = new Date(pedido.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        const statusClass = pedido.status === 'Pendente' ? 'status-pendente' : 'status-baixado';
 
         let totalPecas = 0;
         pedido.dados_pedido.forEach(item => totalPecas += item.Quantidade);
 
-        const statusIcon = pedido.status === 'Pendente' ? '<i class="ph-fill ph-clock"></i>' : '<i class="ph-fill ph-check-circle"></i>';
+        let statusClass = 'status-default';
+        let statusIcon = '<i class="ph-fill ph-info"></i>';
+        
+        switch (pedido.status) {
+            case 'Pendente':
+                statusClass = 'status-pendente';
+                statusIcon = '<i class="ph-fill ph-clock"></i>';
+                break;
+            case 'Baixado':
+                statusClass = 'status-baixado';
+                statusIcon = '<i class="ph-fill ph-download-simple"></i>';
+                break;
+            case 'Produção':
+                statusClass = 'status-producao';
+                statusIcon = '<i class="ph-fill ph-gear"></i>';
+                break;
+            case 'Concluído':
+                statusClass = 'status-concluido';
+                statusIcon = '<i class="ph-fill ph-check-circle"></i>';
+                break;
+            case 'Entregue':
+                statusClass = 'status-entregue';
+                statusIcon = '<i class="ph-fill ph-package"></i>';
+                break;
+            case 'Cancelado':
+                statusClass = 'status-cancelado';
+                statusIcon = '<i class="ph-fill ph-x-circle"></i>';
+                break;
+            case 'Aguardando Preenchimento':
+                statusClass = 'status-aguardando';
+                statusIcon = '<i class="ph-fill ph-hourglass-high"></i>';
+                break;
+        }
 
         let nomeVisual = pedido.cliente;
         if (nomeVisual && nomeVisual.includes(" | ")) {
@@ -347,7 +406,7 @@ window.deleteOrder = async function(id) {
 };
 
 window.changeStatus = async function(id, currentStatus) {
-    const statuses = ['Pendente', 'Baixado', 'Cancelado', 'Produção', 'Concluído'];
+    const statuses = ['Aguardando Preenchimento', 'Pendente', 'Baixado', 'Produção', 'Concluído', 'Entregue', 'Cancelado'];
     let options = statuses.map(s => `<option value="${s}" style="background:#202024; color:#E1E1E6;" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
     
     const modal = document.createElement('div');

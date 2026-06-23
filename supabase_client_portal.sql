@@ -34,3 +34,7 @@ USING (
 WITH CHECK (
   link_token IS NOT NULL
 );
+
+-- 4. Habilitar Realtime para a tabela (Necessário para a atualização automática na tela)
+-- Isso permite que o WebAPP "escute" as alterações feitas pelo VBA ou pelo cliente.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.sublimaster_pedidos;
