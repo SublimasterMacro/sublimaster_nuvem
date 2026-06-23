@@ -183,22 +183,28 @@ async function loadOrders() {
     const lista = document.getElementById('lista-pedidos');
     lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
 
-    // Puxa apenas os pedidos deste código!
+    // Puxa apenas os pedidos deste código! Aumentei o limite para pegar tanto os pendentes normais quanto os links gerados
     const { data, error } = await db
         .from('sublimaster_pedidos')
-        .select('id, cliente, status, created_at, dados_pedido')
+        .select('id, cliente, status, created_at, dados_pedido, link_token, expires_at')
         .eq('codigo_acesso', currentCode)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(50);
+
+    const listaLinks = document.getElementById('lista-links');
 
     if (error) {
         lista.innerHTML = "Erro de conexão.";
+        if(listaLinks) listaLinks.innerHTML = "Erro de conexão.";
         return;
     }
 
     lista.innerHTML = "";
+    if(listaLinks) listaLinks.innerHTML = "";
+
     if (data.length === 0) {
         lista.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum pedido foi enviado para este código ainda.</p>";
+        if(listaLinks) listaLinks.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum link ativo no momento.</p>";
         return;
     }
 
@@ -223,26 +229,60 @@ async function loadOrders() {
             nomeVisual = refP + pts[1];
         }
 
-        li.innerHTML = `
-            <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
-                <div style="flex: 1; min-width: 200px;">
-                    <strong style="font-size: 1.05rem;">${nomeVisual}</strong>
-                    <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                        <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
-                        <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
+        let liHtml = "";
+
+        if (pedido.status === 'Aguardando Preenchimento') {
+            const urlBase = window.location.origin + window.location.pathname.replace('index.html', '');
+            const linkMagico = `${urlBase}cliente.html?token=${pedido.link_token}`;
+            
+            let expText = "";
+            if (pedido.expires_at) {
+                const expDate = new Date(pedido.expires_at);
+                expText = `(Expira: ${expDate.toLocaleDateString('pt-BR')} às ${expDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})})`;
+            }
+
+            liHtml = `
+                <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <strong style="font-size: 1.05rem;"><i class="ph ph-magic-wand text-accent"></i> ${nomeVisual}</strong>
+                        <div style="font-size:13px; color:var(--text-hint); margin-top:6px;">
+                            ${dataStr} às ${horaStr} &bull; ${expText}
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                        <span class="status-tag status-pendente"><i class="ph-fill ph-hourglass-high"></i> Aguardando</span>
+                        <div class="actions" style="display:flex; gap: 8px;">
+                            <button class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="navigator.clipboard.writeText('${linkMagico}'); alert('Link copiado!');" title="Copiar Link"><i class="ph ph-copy"></i> Copiar Link</button>
+                            <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+                        </div>
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                    <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
-                    <div class="actions" style="display:flex; gap: 8px;">
-                        <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
-                        <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
-                        <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+            `;
+            li.innerHTML = liHtml;
+            if(listaLinks) listaLinks.appendChild(li);
+        } else {
+            liHtml = `
+                <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <strong style="font-size: 1.05rem;">${nomeVisual}</strong>
+                        <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
+                            <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                        <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
+                        <div class="actions" style="display:flex; gap: 8px;">
+                            <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
+                            <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
+                            <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        lista.appendChild(li);
+            `;
+            li.innerHTML = liHtml;
+            lista.appendChild(li);
+        }
     });
 }
 
@@ -329,4 +369,75 @@ window.confirmStatusChange = async function(id, newStatus) {
     const { error } = await db.from('sublimaster_pedidos').update({ status: newStatus }).eq('id', id);
     if (error) alert("Erro ao mudar status: " + error.message);
     else loadOrders();
+};
+
+// 7. SISTEMA DE ABAS E GERAÇÃO DE LINKS
+window.switchTab = function(tabId) {
+    document.getElementById('tab-pedidos').style.display = 'none';
+    document.getElementById('tab-links').style.display = 'none';
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.borderBottomColor = 'transparent';
+        btn.style.color = 'var(--text-hint)';
+    });
+    
+    document.getElementById(tabId).style.display = 'block';
+    const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`);
+    if(activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.borderBottomColor = 'var(--accent)';
+        activeBtn.style.color = 'var(--text-main)';
+    }
+};
+
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+window.gerarLinkMagico = async function() {
+    const nome = document.getElementById('link-cliente').value.trim();
+    const validadeHoras = parseInt(document.getElementById('link-validade').value);
+    const msg = document.getElementById('link-msg');
+    
+    if (!nome) {
+        msg.style.color = "#ff5555";
+        msg.innerText = "Digite o nome ou a equipe do cliente!";
+        return;
+    }
+    
+    msg.style.color = "var(--text-main)";
+    msg.innerText = "Gerando Link...";
+    
+    const token = generateUUID();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + validadeHoras);
+    
+    const { error } = await db
+        .from('sublimaster_pedidos')
+        .insert([
+            {
+                codigo_acesso: currentCode,
+                cliente: nome,
+                status: 'Aguardando Preenchimento',
+                dados_pedido: [], // Array vazio
+                link_token: token,
+                expires_at: expiresAt.toISOString(),
+                cliente_view: true
+            }
+        ]);
+        
+    if (error) {
+        msg.style.color = "#ff5555";
+        msg.innerText = "Erro ao gerar: " + error.message;
+    } else {
+        msg.style.color = "var(--accent)";
+        msg.innerText = "✅ Link gerado com sucesso!";
+        document.getElementById('link-cliente').value = "";
+        loadOrders();
+        setTimeout(() => msg.innerText = "", 4000);
+    }
 };
