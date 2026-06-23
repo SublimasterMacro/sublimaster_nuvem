@@ -399,6 +399,7 @@ function generateUUID() {
 }
 
 window.gerarLinkMagico = async function() {
+    const ref = document.getElementById('link-referencia').value.trim();
     const nome = document.getElementById('link-cliente').value.trim();
     const validadeHoras = parseInt(document.getElementById('link-validade').value);
     const msg = document.getElementById('link-msg');
@@ -407,6 +408,11 @@ window.gerarLinkMagico = async function() {
         msg.style.color = "#ff5555";
         msg.innerText = "Digite o nome ou a equipe do cliente!";
         return;
+    }
+    
+    let clienteStr = nome;
+    if (ref) {
+        clienteStr = ref + " | " + nome;
     }
     
     msg.style.color = "var(--text-main)";
@@ -421,7 +427,7 @@ window.gerarLinkMagico = async function() {
         .insert([
             {
                 codigo_acesso: currentCode,
-                cliente: nome,
+                cliente: clienteStr,
                 status: 'Aguardando Preenchimento',
                 dados_pedido: [], // Array vazio
                 link_token: token,
@@ -437,6 +443,7 @@ window.gerarLinkMagico = async function() {
         msg.style.color = "var(--accent)";
         msg.innerText = "✅ Link gerado com sucesso!";
         document.getElementById('link-cliente').value = "";
+        document.getElementById('link-referencia').value = "";
         loadOrders();
         setTimeout(() => msg.innerText = "", 4000);
     }
