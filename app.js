@@ -53,6 +53,7 @@ function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
     loadOrders();
+    suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
 }
 
@@ -161,6 +162,7 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
             tbodyItens.innerHTML = "";
             adicionarLinha();
             loadOrders();
+            suggestNextReference();
             setTimeout(() => msg.innerText = "", 4000);
         }
     }
@@ -445,6 +447,58 @@ window.gerarLinkMagico = async function() {
         document.getElementById('link-cliente').value = "";
         document.getElementById('link-referencia').value = "";
         loadOrders();
+        suggestNextReference();
         setTimeout(() => msg.innerText = "", 4000);
     }
 };
+
+async function suggestNextReference() {
+    if (!currentCode) return;
+
+    // Busca o último pedido
+    const { data, error } = await db
+        .from('sublimaster_pedidos')
+        .select('cliente')
+        .eq('codigo_acesso', currentCode)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+    if (error || !data) {
+        document.getElementById('referencia').value = "1";
+        document.getElementById('link-referencia').value = "1";
+        return;
+    }
+
+    let lastRef = data.cliente;
+    if (lastRef.includes(" | ")) {
+        lastRef = lastRef.split(" | ")[0];
+    } else {
+        // Se não houver " | ", o pedido inteiro foi salvo como nome (ex: pedido antigo)
+        // Não temos uma referência isolada garantida, mas podemos tentar extrair o número
+    }
+
+    // Tenta encontrar o ÚLTIMO bloco de números na string
+    const match = lastRef.match(/^(.*?)(\d+)(\D*)$/);
+    if (match) {
+        const prefix = match[1];
+        const numStr = match[2];
+        const suffix = match[3];
+        
+        // Mantém os zeros à esquerda (ex: 004 -> 005)
+        const isPadded = numStr.startsWith('0') && numStr.length > 1;
+        const nextNum = parseInt(numStr, 10) + 1;
+        let nextNumStr = nextNum.toString();
+        if (isPadded) {
+            nextNumStr = nextNumStr.padStart(numStr.length, '0');
+        }
+        
+        const nextRef = prefix + nextNumStr + suffix;
+        document.getElementById('referencia').value = nextRef;
+        document.getElementById('link-referencia').value = nextRef;
+    } else {
+        // Se não encontrou número nenhum, sugere "1"
+        document.getElementById('referencia').value = "1";
+        document.getElementById('link-referencia').value = "1";
+    }
+}
