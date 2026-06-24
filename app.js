@@ -12,11 +12,19 @@ const msgLogin = document.getElementById('login-msg');
 let currentCode = null;
 
 // 1. CHECAR SE JÁ TEM CÓDIGO SALVO
-function checkSession() {
+async function checkSession() {
     const savedCode = localStorage.getItem('sublimaster_codigo');
     if (savedCode) {
-        currentCode = savedCode;
-        showDashboard();
+        // Validar no Supabase antes de permitir a entrada silenciosa
+        const { data, error } = await db.rpc('check_license_web', { p_chave: savedCode });
+        
+        if (!error && data === true) {
+            currentCode = savedCode;
+            showDashboard();
+        } else {
+            // Licença não é mais válida ou revogada, limpar sessão
+            localStorage.removeItem('sublimaster_codigo');
+        }
     }
 }
 
@@ -29,13 +37,33 @@ document.getElementById('btn-login').addEventListener('click', async () => {
         return;
     }
 
-    msgLogin.innerText = "Entrando...";
+    msgLogin.innerText = "Verificando licença...";
     msgLogin.style.color = "#E0E0E0";
 
-    // Salva o código localmente e entra
-    currentCode = inputCode;
-    localStorage.setItem('sublimaster_codigo', currentCode);
-    showDashboard();
+    try {
+        const { data, error } = await db.rpc('check_license_web', { p_chave: inputCode });
+
+        if (error) {
+            console.error("Erro RPC:", error);
+            msgLogin.innerText = "Erro ao conectar com o servidor.";
+            msgLogin.style.color = "#ff5555";
+            return;
+        }
+
+        if (data === true) {
+            // Licença válida, permite o acesso
+            currentCode = inputCode;
+            localStorage.setItem('sublimaster_codigo', currentCode);
+            showDashboard();
+        } else {
+            // Licença não encontrada
+            msgLogin.innerText = "Licença não encontrada ou inativa.";
+            msgLogin.style.color = "#ff5555";
+        }
+    } catch (err) {
+        msgLogin.innerText = "Erro ao validar a licença.";
+        msgLogin.style.color = "#ff5555";
+    }
 });
 
 // LOGOUT
