@@ -454,6 +454,7 @@ window.confirmStatusChange = async function(id, newStatus) {
 window.switchTab = function(tabId) {
     document.getElementById('tab-pedidos').style.display = 'none';
     document.getElementById('tab-links').style.display = 'none';
+    document.getElementById('tab-dashboard').style.display = 'none';
     
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -468,6 +469,8 @@ window.switchTab = function(tabId) {
         activeBtn.style.borderBottomColor = 'var(--accent)';
         activeBtn.style.color = 'var(--text-main)';
     }
+
+    if (tabId === 'tab-dashboard') refreshDashboard();
 };
 
 function generateUUID() {
@@ -609,6 +612,185 @@ async function suggestNextReference() {
         document.getElementById('referencia').value = `PED-${currentYear}-0001`;
         document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
     }
+}
+// =============================================================================
+// 9. DASHBOARD — Cálculos feitos 100% no navegador, sem alterar o banco
+// =============================================================================
+
+async function refreshDashboard() {
+    if (!currentCode) return;
+
+    // Buscar TODOS os pedidos do mês atual
+    const now = new Date();
+    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+    const { data, error } = await db
+        .from('sublimaster_pedidos')
+        .select('id, cliente, status, created_at, dados_pedido, link_token, expires_at')
+        .eq('codigo_acesso', currentCode)
+        .gte('created_at', firstOfMonth)
+        .order('created_at', { ascending: false })
+        .limit(500);
+
+    if (error || !data) return;
+
+    // ---------- KPIs ----------
+    let pendentes = 0, producao = 0, concluidos = 0, pecasTotal = 0;
+    let aguardando = [];
+    let pedidosComPrazo = [];
+
+    data.forEach(p => {
+        let pecas = 0;
+        if (p.dados_pedido && Array.isArray(p.dados_pedido)) {
+            p.dados_pedido.forEach(item => pecas += (item.Quantidade || 0));
+        }
+        pecasTotal += pecas;
+
+        switch (p.status) {
+            case 'Pendente': pendentes++; break;
+            case 'Produção': producao++; break;
+            case 'Concluído': concluidos++; break;
+        }
+
+        if (p.status === 'Aguardando Preenchimento') {
+            aguardando.push(p);
+        }
+
+        // Extrair data de entrega do campo cliente
+        if (p.cliente && p.cliente.includes(' - Entrega:')) {
+            const match = p.cliente.match(/Entrega:\s*(\d{2})\/(\d{2})\/(\d{4})/);
+            if (match) {
+                const entrega = new Date(parseInt(match[3]), parseInt(match[2]) - 1, parseInt(match[1]));
+                if (!['Concluído', 'Entregue', 'Cancelado'].includes(p.status)) {
+                    let nomeVisual = p.cliente;
+                    if (nomeVisual.includes(' | ')) {
+                        const pts = nomeVisual.split(' | ');
+                        nomeVisual = pts[1];
+                    }
+                    if (nomeVisual.includes(' - Entrega:')) {
+                        nomeVisual = nomeVisual.split(' - Entrega:')[0].trim();
+                    }
+                    pedidosComPrazo.push({
+                        nome: nomeVisual,
+                        ref: p.cliente.includes(' | ') ? p.cliente.split(' | ')[0] : '',
+                        entrega: entrega,
+                        status: p.status,
+                        diasRestantes: Math.ceil((entrega - now) / (1000 * 60 * 60 * 24))
+                    });
+                }
+            }
+        }
+    });
+
+    // Animar os KPIs
+    animateKPI('kpi-pendentes', pendentes);
+    animateKPI('kpi-producao', producao);
+    animateKPI('kpi-concluidos', concluidos);
+    animateKPI('kpi-pecas-total', pecasTotal);
+
+    // ---------- Alertas de Prazo ----------
+    const alertasDiv = document.getElementById('dash-alertas');
+    pedidosComPrazo.sort((a, b) => a.diasRestantes - b.diasRestantes);
+    const urgentes = pedidosComPrazo.filter(p => p.diasRestantes <= 5);
+
+    if (urgentes.length === 0) {
+        alertasDiv.innerHTML = '<p style="color: var(--accent);"><i class="ph-fill ph-check-circle" style="margin-right: 6px;"></i>Nenhum prazo urgente nos próximos 5 dias. Tudo sob controle!</p>';
+        document.getElementById('dash-alertas-card').style.borderColor = 'rgba(0,179,126,0.3)';
+    } else {
+        let html = '';
+        urgentes.forEach(p => {
+            let cor = 'var(--warning)';
+            let icone = 'ph-warning';
+            let texto = p.diasRestantes + ' dia(s)';
+            if (p.diasRestantes <= 0) {
+                cor = 'var(--error)';
+                icone = 'ph-fire';
+                texto = p.diasRestantes === 0 ? 'HOJE!' : 'ATRASADO ' + Math.abs(p.diasRestantes) + ' dia(s)';
+            }
+            const refTag = p.ref ? '<span style="color:var(--accent); font-weight:600; margin-right:6px;">[' + p.ref + ']</span>' : '';
+            const statusKey = p.status === 'Produção' ? 'producao' : 'pendente';
+            html += '<div style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);">'
+                + '<i class="ph-fill ' + icone + '" style="color:' + cor + '; font-size:20px; flex-shrink:0;"></i>'
+                + '<div style="flex:1;">' + refTag + '<strong>' + p.nome + '</strong></div>'
+                + '<span style="color:' + cor + '; font-weight:600; white-space:nowrap; font-size:0.9rem;">' + texto + '</span>'
+                + '<span class="status-tag status-' + statusKey + '" style="font-size:0.75rem; padding:4px 8px;">' + p.status + '</span>'
+                + '</div>';
+        });
+        alertasDiv.innerHTML = html;
+        document.getElementById('dash-alertas-card').style.borderColor = 'rgba(247,90,104,0.4)';
+    }
+
+    // ---------- Barras de Status ----------
+    const statusBars = document.getElementById('dash-status-bars');
+    const statusConfig = [
+        { key: 'Pendente', label: 'Pendente', color: '#FBA94C', icon: 'ph-clock' },
+        { key: 'Baixado', label: 'Baixado', color: '#00B37E', icon: 'ph-download-simple' },
+        { key: 'Produção', label: 'Em Produção', color: '#4da6ff', icon: 'ph-gear' },
+        { key: 'Concluído', label: 'Concluído', color: '#b366ff', icon: 'ph-check-circle' },
+        { key: 'Entregue', label: 'Entregue', color: '#20c997', icon: 'ph-package' },
+        { key: 'Cancelado', label: 'Cancelado', color: '#ff5555', icon: 'ph-x-circle' },
+    ];
+
+    const totalPedidos = data.filter(p => p.status !== 'Aguardando Preenchimento').length;
+    let barsHtml = '';
+    statusConfig.forEach(s => {
+        const count = data.filter(p => p.status === s.key).length;
+        const pct = totalPedidos > 0 ? Math.round((count / totalPedidos) * 100) : 0;
+        barsHtml += '<div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">'
+            + '<div style="width:130px; display:flex; align-items:center; gap:8px; flex-shrink:0;">'
+            + '<i class="ph-fill ' + s.icon + '" style="color:' + s.color + '; font-size:16px;"></i>'
+            + '<span style="font-size:0.85rem; color:var(--text-hint);">' + s.label + '</span></div>'
+            + '<div style="flex:1; background:rgba(255,255,255,0.05); border-radius:6px; height:24px; overflow:hidden; position:relative;">'
+            + '<div class="dash-bar-fill" style="width:' + pct + '%; background:' + s.color + '; height:100%; border-radius:6px; transition: width 0.8s ease;"></div></div>'
+            + '<span style="width:50px; text-align:right; font-weight:600; font-size:0.95rem; color:' + s.color + ';">' + count + '</span>'
+            + '</div>';
+    });
+    statusBars.innerHTML = barsHtml;
+
+    // ---------- Links Aguardando ----------
+    const linksDiv = document.getElementById('dash-links-aguardando');
+    if (aguardando.length === 0) {
+        linksDiv.innerHTML = '<p style="color: var(--text-hint);"><i class="ph ph-check" style="margin-right:6px;"></i>Nenhum link pendente no momento.</p>';
+    } else {
+        let lHtml = '';
+        aguardando.forEach(p => {
+            let nomeVisual = p.cliente || 'Sem nome';
+            if (nomeVisual.includes(' | ')) {
+                const pts = nomeVisual.split(' | ');
+                nomeVisual = '<span style="color:var(--accent); font-weight:600;">[' + pts[0] + ']</span> ' + pts[1];
+            }
+            if (nomeVisual.includes(' - Entrega:')) nomeVisual = nomeVisual.split(' - Entrega:')[0];
+            const criado = new Date(p.created_at);
+            const horasAtras = Math.round((now - criado) / (1000 * 60 * 60));
+            let tempoStr = horasAtras < 1 ? 'Agora' : horasAtras < 24 ? horasAtras + 'h atrás' : Math.round(horasAtras / 24) + ' dia(s) atrás';
+            
+            lHtml += '<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border);">'
+                + '<div><i class="ph ph-hourglass-high" style="color:#aaa; margin-right:8px;"></i>' + nomeVisual + '</div>'
+                + '<span style="color:var(--text-hint); font-size:0.85rem;">' + tempoStr + '</span>'
+                + '</div>';
+        });
+        linksDiv.innerHTML = lHtml;
+    }
+}
+
+// Animação suave nos contadores do KPI
+function animateKPI(elementId, target) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const current = parseInt(el.textContent) || 0;
+    if (current === target) return;
+    
+    const duration = 600;
+    const start = performance.now();
+    
+    function step(timestamp) {
+        const elapsed = timestamp - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(current + (target - current) * ease);
+        if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
 }
 
 // Iniciar a sessão SOMENTE após todas as funções estarem definidas

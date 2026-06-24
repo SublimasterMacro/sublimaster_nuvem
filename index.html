@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=19">
+    <link rel="stylesheet" href="style.css?v=20">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -60,6 +60,7 @@
                 <div class="admin-tabs" style="display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                     <button class="tab-btn active" onclick="switchTab('tab-pedidos')" style="background: none; border: none; color: var(--text-main); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid var(--accent);"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Meus Pedidos</button>
                     <button class="tab-btn" onclick="switchTab('tab-links')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-link" style="margin-right: 8px;"></i>Links para Clientes</button>
+                    <button class="tab-btn" onclick="switchTab('tab-dashboard')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
                 </div>
             </div>
         </header>
@@ -198,9 +199,72 @@
                 </div>
             </div> <!-- Fim tab-links -->
 
+            <!-- ABA 3: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content" style="display: none;">
+                <!-- KPI Cards -->
+                <div class="dash-kpi-row slide-up">
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(251,169,76,0.15); color: #FBA94C;"><i class="ph-fill ph-clock"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-pendentes">0</span>
+                            <span class="dash-kpi-label">Pendentes</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(77,166,255,0.15); color: #4da6ff;"><i class="ph-fill ph-gear"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-producao">0</span>
+                            <span class="dash-kpi-label">Em Produção</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(0,179,126,0.15); color: #00B37E;"><i class="ph-fill ph-check-circle"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-concluidos">0</span>
+                            <span class="dash-kpi-label">Concluídos</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(179,102,255,0.15); color: #b366ff;"><i class="ph-fill ph-t-shirt"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-pecas-total">0</span>
+                            <span class="dash-kpi-label">Peças no Mês</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alertas de Prazo -->
+                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;" id="dash-alertas-card">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-warning-circle" style="color: var(--error);"></i> Prazos Próximos</h3>
+                    </div>
+                    <div id="dash-alertas" style="font-size: 0.95rem;">
+                        <p style="color: var(--text-hint);">Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Status por Etapa (barras visuais) -->
+                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.2s;">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-funnel text-accent"></i> Pedidos por Status</h3>
+                    </div>
+                    <div id="dash-status-bars"></div>
+                </div>
+
+                <!-- Links Aguardando -->
+                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.3s;">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-link-break" style="color: #aaa;"></i> Links Aguardando Preenchimento</h3>
+                    </div>
+                    <div id="dash-links-aguardando" style="font-size: 0.95rem;">
+                        <p style="color: var(--text-hint);">Carregando...</p>
+                    </div>
+                </div>
+            </div> <!-- Fim tab-dashboard -->
+
         </main>
     </div>
 
-    <script src="app.js?v=24"></script>
+    <script src="app.js?v=25"></script>
 </body>
 </html>
