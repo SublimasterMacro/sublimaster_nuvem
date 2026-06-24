@@ -60,7 +60,7 @@
                 <div class="admin-tabs" style="display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                     <button class="tab-btn" onclick="switchTab('tab-pedidos')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Meus Pedidos</button>
                     <button class="tab-btn" onclick="switchTab('tab-links')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-link" style="margin-right: 8px;"></i>Links para Clientes</button>
-                    <button class="tab-btn active" onclick="switchTab('tab-dashboard')" style="background: none; border: none; color: var(--text-main); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid var(--accent);"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
+                    <button class="tab-btn" onclick="switchTab('tab-dashboard')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
                 </div>
             </div>
         </header>
@@ -200,7 +200,7 @@
             </div> <!-- Fim tab-links -->
 
             <!-- ABA 3: DASHBOARD -->
-            <div id="tab-dashboard" class="tab-content">
+            <div id="tab-dashboard" class="tab-content" style="display: none;">
                 <!-- KPI Cards -->
                 <div class="dash-kpi-row slide-up">
                     <div class="glass-panel dash-kpi-card">
@@ -256,6 +256,6 @@
         </main>
     </div>
 
-    <script src="app.js?v=30"></script>
+    <script src="app.js?v=31"></script>
 </body>
 </html>
