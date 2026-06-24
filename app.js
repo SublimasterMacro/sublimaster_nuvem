@@ -314,6 +314,10 @@ async function loadOrders() {
         }
 
         let nomeVisual = pedido.cliente;
+        // Limpar a data de entrega da exibição
+        if (nomeVisual && nomeVisual.includes(' - Entrega:')) {
+            nomeVisual = nomeVisual.split(' - Entrega:')[0];
+        }
         if (nomeVisual && nomeVisual.includes(" | ")) {
             const pts = nomeVisual.split(" | ");
             const refP = pts[0] ? `<span style="color:var(--accent); font-weight:600; margin-right:6px;">[${pts[0]}]</span>` : "";
@@ -390,6 +394,16 @@ window.editOrder = function(id) {
         const pts = cli.split(" | ");
         ref = pts[0];
         cli = pts[1];
+    }
+    
+    // Extrair e remover a data de entrega do nome (para não duplicar ao salvar)
+    if (cli && cli.includes(' - Entrega:')) {
+        const entregaMatch = cli.match(/Entrega:\s*(\d{2})\/(\d{2})\/(\d{4})/);
+        if (entregaMatch) {
+            const isoDate = entregaMatch[3] + '-' + entregaMatch[2] + '-' + entregaMatch[1];
+            document.getElementById('data-entrega').value = isoDate;
+        }
+        cli = cli.split(' - Entrega:')[0].trim();
     }
     
     document.getElementById('referencia').value = ref;
