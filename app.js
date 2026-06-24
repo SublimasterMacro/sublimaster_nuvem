@@ -52,6 +52,14 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
 function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
+    
+    // Preenche as datas de entrega automaticamente (Daqui a 20 dias)
+    const d = new Date();
+    d.setDate(d.getDate() + 20);
+    const dataFormatada = d.toISOString().split('T')[0];
+    if(document.getElementById('data-entrega')) document.getElementById('data-entrega').value = dataFormatada;
+    if(document.getElementById('link-data-entrega')) document.getElementById('link-data-entrega').value = dataFormatada;
+
     window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
@@ -90,14 +98,22 @@ let editingOrderId = null;
 document.getElementById('btn-salvar').addEventListener('click', async () => {
     const clienteName = document.getElementById('cliente').value.trim();
     const referencia = document.getElementById('referencia').value.trim();
+    const dataEntregaRaw = document.getElementById('data-entrega').value;
     
     if (!clienteName && !referencia) return alert("Digite o nome do cliente ou a referência do pedido!");
 
+    // Formata a data de entrega
+    let strEntrega = "";
+    if (dataEntregaRaw) {
+        const [y, m, d] = dataEntregaRaw.split('-');
+        strEntrega = ` - Entrega: ${d}/${m}/${y}`;
+    }
+
     // Concatena com separador " | " para o banco de dados (que usa apenas uma coluna)
     let clienteStr = "";
-    if (referencia && clienteName) clienteStr = referencia + " | " + clienteName;
-    else if (referencia) clienteStr = referencia + " | ";
-    else clienteStr = " | " + clienteName;
+    if (referencia && clienteName) clienteStr = referencia + " | " + clienteName + strEntrega;
+    else if (referencia) clienteStr = referencia + " | " + strEntrega;
+    else clienteStr = " | " + clienteName + strEntrega;
 
     const linhas = tbodyItens.querySelectorAll('tr');
     let itens = [];
@@ -465,6 +481,7 @@ window.gerarLinkMagico = async function() {
     const ref = document.getElementById('link-referencia').value.trim();
     const nome = document.getElementById('link-cliente').value.trim();
     const validadeHoras = parseInt(document.getElementById('link-validade').value);
+    const dataEntregaRaw = document.getElementById('link-data-entrega').value;
     const msg = document.getElementById('link-msg');
     
     if (!nome) {
@@ -473,9 +490,16 @@ window.gerarLinkMagico = async function() {
         return;
     }
     
-    let clienteStr = nome;
+    // Formata a data de entrega
+    let strEntrega = "";
+    if (dataEntregaRaw) {
+        const [y, m, d] = dataEntregaRaw.split('-');
+        strEntrega = ` - Entrega: ${d}/${m}/${y}`;
+    }
+    
+    let clienteStr = nome + strEntrega;
     if (ref) {
-        clienteStr = ref + " | " + nome;
+        clienteStr = ref + " | " + nome + strEntrega;
     }
     
     msg.style.color = "var(--text-main)";
