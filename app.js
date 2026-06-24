@@ -207,6 +207,51 @@ function cancelEditMode() {
     
     const btnCancel = document.getElementById('btn-cancel-edit');
     if (btnCancel) btnCancel.remove();
+    const btnShare = document.getElementById('btn-share-link');
+    if (btnShare) btnShare.remove();
+}
+
+// Gera (ou reutiliza) um link compartilhável para o pedido
+async function shareOrderLink(orderId) {
+    const pedido = window.loadedOrders.find(p => p.id === orderId);
+    if (!pedido) return;
+
+    const msg = document.getElementById('save-msg');
+
+    // Se já tem token, reutiliza
+    if (pedido.link_token) {
+        const urlBase = window.location.origin + window.location.pathname.replace('index.html', '');
+        const link = urlBase + 'cliente.html?token=' + pedido.link_token;
+        await navigator.clipboard.writeText(link);
+        msg.style.color = 'var(--accent)';
+        msg.innerText = '✅ Link copiado!';
+        setTimeout(() => msg.innerText = '', 4000);
+        return;
+    }
+
+    // Gera um novo token
+    const token = generateUUID();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30); // 30 dias de validade
+
+    const { error } = await db
+        .from('sublimaster_pedidos')
+        .update({ link_token: token, expires_at: expiresAt.toISOString(), cliente_view: true })
+        .eq('id', orderId);
+
+    if (error) {
+        msg.style.color = 'var(--error)';
+        msg.innerText = 'Erro ao gerar link: ' + error.message;
+        return;
+    }
+
+    const urlBase = window.location.origin + window.location.pathname.replace('index.html', '');
+    const link = urlBase + 'cliente.html?token=' + token;
+    await navigator.clipboard.writeText(link);
+    msg.style.color = 'var(--accent)';
+    msg.innerText = '✅ Link gerado e copiado!';
+    pedido.link_token = token; // Atualiza localmente
+    setTimeout(() => msg.innerText = '', 4000);
 }
 
 // Variável global para armazenar a assinatura Realtime
@@ -436,6 +481,17 @@ window.editOrder = function(id) {
         btnCancel.innerHTML = 'Cancelar';
         btnCancel.onclick = cancelEditMode;
         btnSalvar.parentNode.appendChild(btnCancel);
+    }
+
+    // Botão Copiar Link (compartilhar pedido com o cliente)
+    if (!document.getElementById('btn-share-link')) {
+        const btnShare = document.createElement('button');
+        btnShare.id = 'btn-share-link';
+        btnShare.className = 'btn-secondary';
+        btnShare.style.marginLeft = '10px';
+        btnShare.innerHTML = '<i class="ph ph-share-network"></i> Copiar Link';
+        btnShare.onclick = () => shareOrderLink(id);
+        btnSalvar.parentNode.appendChild(btnShare);
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
