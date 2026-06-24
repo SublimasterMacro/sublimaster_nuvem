@@ -67,14 +67,32 @@ document.getElementById('btn-login').addEventListener('click', async () => {
 });
 
 // LOGOUT
-document.getElementById('btn-logout').addEventListener('click', async () => {
+function forceLogout(message = null) {
+    if (message) alert(message);
     localStorage.removeItem('sublimaster_codigo');
     loginScreen.classList.remove('hidden');
     dashboardScreen.classList.add('hidden');
     currentCode = null;
     document.getElementById('codigo-acesso').value = "";
     msgLogin.innerText = "";
+    if (realtimeSubscription) {
+        db.removeChannel(realtimeSubscription);
+    }
+}
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+    forceLogout();
 });
+
+// Checagem contínua de sessão a cada 15 segundos
+setInterval(async () => {
+    if (currentCode) {
+        const { data, error } = await db.rpc('check_license_web', { p_chave: currentCode });
+        if (error || data !== true) {
+            forceLogout("Atenção: O código de acesso desta confecção foi alterado ou revogado.\n\nVocê foi desconectado por segurança.");
+        }
+    }
+}, 15000);
 
 // TROCAR TELA
 async function showDashboard() {
