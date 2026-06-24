@@ -483,17 +483,6 @@ window.editOrder = function(id) {
         btnCancel.onclick = cancelEditMode;
         btnSalvar.parentNode.appendChild(btnCancel);
     }
-
-    // Botão Copiar Link (compartilhar pedido com o cliente)
-    if (!document.getElementById('btn-share-link')) {
-        const btnShare = document.createElement('button');
-        btnShare.id = 'btn-share-link';
-        btnShare.className = 'btn-secondary';
-        btnShare.style.marginLeft = '10px';
-        btnShare.innerHTML = '<i class="ph ph-share-network"></i> Copiar Link';
-        btnShare.onclick = () => shareOrderLink(id);
-        btnSalvar.parentNode.appendChild(btnShare);
-    }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
