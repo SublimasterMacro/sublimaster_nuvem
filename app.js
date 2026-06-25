@@ -188,6 +188,7 @@ function verificarIntencaoDoUsuario() {
             btnSalvar.dataset.modo = 'pedido';
             btnSalvar.innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
             btnSalvar.style.background = 'var(--accent)';
+            btnSalvar.style.boxShadow = '0 4px 15px var(--accent-glow)';
             btnSalvar.style.transition = 'all 0.3s ease';
             if (grupoValidade) grupoValidade.style.display = 'none';
         }
@@ -197,6 +198,7 @@ function verificarIntencaoDoUsuario() {
             btnSalvar.dataset.modo = 'link';
             btnSalvar.innerHTML = '<i class="ph ph-link"></i><span>Gerar Link Único</span>';
             btnSalvar.style.background = 'linear-gradient(135deg, #7c3aed, #a855f7)';
+            btnSalvar.style.boxShadow = '0 4px 15px rgba(124, 58, 237, 0.4)';
             btnSalvar.style.transition = 'all 0.3s ease';
             if (grupoValidade) grupoValidade.style.display = '';
         }
@@ -323,9 +325,9 @@ function cancelEditMode() {
     document.getElementById('referencia').value = "";
     tbodyItens.innerHTML = "";
     adicionarLinha();
-    document.getElementById('btn-salvar').innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
-    document.getElementById('btn-salvar').dataset.modo = 'pedido';
-    document.getElementById('btn-salvar').style.background = 'var(--accent)';
+    
+    suggestNextReference();
+    verificarIntencaoDoUsuario();
     
     const btnCancel = document.getElementById('btn-cancel-edit');
     if (btnCancel) btnCancel.remove();
@@ -562,6 +564,9 @@ window.editOrder = function(id) {
 
     const btnSalvar = document.getElementById('btn-salvar');
     btnSalvar.innerHTML = '<i class="ph ph-pencil-simple"></i><span>Atualizar Pedido</span>';
+    btnSalvar.style.background = 'var(--accent)';
+    btnSalvar.style.boxShadow = '0 4px 15px var(--accent-glow)';
+    btnSalvar.dataset.modo = 'pedido';
     
     if (!document.getElementById('btn-cancel-edit')) {
         const btnCancel = document.createElement('button');
