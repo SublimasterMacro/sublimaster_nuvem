@@ -112,7 +112,6 @@ async function showDashboard() {
     loadOrders();
     suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
-    setupSmartButton();
 
     // Decide a aba inicial: Dashboard (se tem dados) ou Meus Pedidos (se vazio)
     const { count, error } = await db
