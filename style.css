@@ -180,9 +180,10 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
     -webkit-text-fill-color: #E1E1E6 !important;
-    caret-color: #E1E1E6;
+    color: #E1E1E6 !important;
+    caret-color: #E1E1E6 !important;
 }
 
 /* Buttons */
