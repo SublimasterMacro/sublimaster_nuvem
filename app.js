@@ -408,7 +408,9 @@ async function loadOrders() {
     if (!currentCode) return;
     
     const lista = document.getElementById('lista-pedidos');
-    lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
+    if (lista.children.length === 0) {
+        lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
+    }
 
     // Puxa apenas os pedidos deste código! Aumentei o limite para pegar tanto os pendentes normais quanto os links gerados
     const { data, error } = await db
