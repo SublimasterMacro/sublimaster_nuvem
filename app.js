@@ -17,7 +17,7 @@ async function checkSession() {
     if (savedCode) {
         // Validar no Supabase antes de permitir a entrada silenciosa
         const { data, error } = await db.rpc('check_license_web', { p_chave: savedCode });
-        
+
         if (!error && data === true) {
             currentCode = savedCode;
             showDashboard();
@@ -101,12 +101,12 @@ async function showDashboard() {
     document.documentElement.classList.remove('has-session');
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
-    
+
     // Preenche as datas de entrega automaticamente (Daqui a 20 dias)
     const d = new Date();
     d.setDate(d.getDate() + 20);
     const dataFormatada = d.toISOString().split('T')[0];
-    if(document.getElementById('data-entrega')) document.getElementById('data-entrega').value = dataFormatada;
+    if (document.getElementById('data-entrega')) document.getElementById('data-entrega').value = dataFormatada;
 
     window.setupRealtimeSubscription();
     loadOrders();
@@ -148,7 +148,7 @@ window.adicionarLinha = adicionarLinha; // expõe para o onclick no HTML
 document.getElementById('btn-add-item').addEventListener('click', adicionarLinha);
 
 document.getElementById('btn-clear-list').addEventListener('click', () => {
-    if(confirm("Deseja realmente limpar todos os itens da tabela?")) {
+    if (confirm("Deseja realmente limpar todos os itens da tabela?")) {
         tbodyItens.innerHTML = "";
         adicionarLinha();
     }
@@ -174,7 +174,7 @@ function verificarIntencaoDoUsuario() {
         const numero = tr.querySelector('.inp-numero');
         const adic = tr.querySelector('.inp-adic');
         const tamanho = tr.querySelector('.inp-tamanho');
-        if ((nome && nome.value.trim()) || (numero && numero.value.trim()) || 
+        if ((nome && nome.value.trim()) || (numero && numero.value.trim()) ||
             (adic && adic.value.trim()) || (tamanho && tamanho.value.trim())) {
             temConteudoNaTabela = true;
         }
@@ -232,7 +232,7 @@ async function enviarPedido() {
     const clienteName = document.getElementById('cliente').value.trim();
     const referencia = document.getElementById('referencia').value.trim();
     const dataEntregaRaw = document.getElementById('data-entrega').value;
-    
+
     if (!clienteName && !referencia) return alert("Digite o nome do cliente ou a referência do pedido!");
 
     // Formata a data de entrega
@@ -266,7 +266,7 @@ async function enviarPedido() {
     if (itens.length === 0) return alert("Adicione pelo menos um tamanho!");
 
     const msg = document.getElementById('save-msg');
-    
+
     if (editingOrderId) {
         msg.innerText = "Atualizando pedido...";
         const { error } = await db
@@ -325,10 +325,10 @@ function cancelEditMode() {
     document.getElementById('referencia').value = "";
     tbodyItens.innerHTML = "";
     adicionarLinha();
-    
+
     suggestNextReference();
     verificarIntencaoDoUsuario();
-    
+
     const btnCancel = document.getElementById('btn-cancel-edit');
     if (btnCancel) btnCancel.remove();
     const btnShare = document.getElementById('btn-share-link');
@@ -382,11 +382,11 @@ async function shareOrderLink(orderId) {
 let realtimeSubscription = null;
 
 // Configura o ouvinte em tempo real para atualizar a lista de pedidos automaticamente
-window.setupRealtimeSubscription = function() {
+window.setupRealtimeSubscription = function () {
     if (realtimeSubscription) {
         db.removeChannel(realtimeSubscription);
     }
-    
+
     // Inscreve no canal para escutar INSERT, UPDATE e DELETE na tabela sublimaster_pedidos
     realtimeSubscription = db.channel('custom-all-channel')
         .on(
@@ -406,7 +406,7 @@ window.setupRealtimeSubscription = function() {
 // 5. HISTÓRICO DE PEDIDOS DO CÓDIGO (GET)
 async function loadOrders() {
     if (!currentCode) return;
-    
+
     const lista = document.getElementById('lista-pedidos');
     if (lista.children.length === 0) {
         lista.innerHTML = "<p style='color:#999; font-size:13px;'>Buscando histórico da confecção...</p>";
@@ -447,7 +447,7 @@ async function loadOrders() {
 
         let statusClass = 'status-default';
         let statusIcon = '<i class="ph-fill ph-info"></i>';
-        
+
         switch (pedido.status) {
             case 'Pendente':
                 statusClass = 'status-pendente';
@@ -521,12 +521,12 @@ async function loadOrders() {
 }
 
 // 6. AÇÕES DE GERENCIAMENTO
-window.editOrder = function(id) {
+window.editOrder = function (id) {
     const pedido = window.loadedOrders.find(p => p.id === id);
     if (!pedido) return;
 
     editingOrderId = id;
-    
+
     let ref = "";
     let cli = pedido.cliente;
     if (cli && cli.includes(" | ")) {
@@ -534,7 +534,7 @@ window.editOrder = function(id) {
         ref = pts[0];
         cli = pts[1];
     }
-    
+
     // Extrair e remover a data de entrega do nome (para não duplicar ao salvar)
     if (cli && cli.includes(' - Entrega:')) {
         const entregaMatch = cli.match(/Entrega:\s*(\d{2})\/(\d{2})\/(\d{4})/);
@@ -544,11 +544,11 @@ window.editOrder = function(id) {
         }
         cli = cli.split(' - Entrega:')[0].trim();
     }
-    
+
     document.getElementById('referencia').value = ref;
     document.getElementById('cliente').value = cli;
     tbodyItens.innerHTML = "";
-    
+
     pedido.dados_pedido.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -569,7 +569,7 @@ window.editOrder = function(id) {
     btnSalvar.style.background = '';
     btnSalvar.style.boxShadow = '';
     btnSalvar.dataset.modo = 'pedido';
-    
+
     if (!document.getElementById('btn-cancel-edit')) {
         const btnCancel = document.createElement('button');
         btnCancel.id = 'btn-cancel-edit';
@@ -579,22 +579,22 @@ window.editOrder = function(id) {
         btnCancel.onclick = cancelEditMode;
         btnSalvar.parentNode.appendChild(btnCancel);
     }
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.deleteOrder = async function(id) {
+window.deleteOrder = async function (id) {
     if (!confirm("Tem certeza que deseja excluir este pedido?")) return;
-    
+
     const { error } = await db.from('sublimaster_pedidos').delete().eq('id', id);
     if (error) alert("Erro ao excluir: " + error.message);
     else loadOrders();
 };
 
-window.changeStatus = async function(id, currentStatus) {
+window.changeStatus = async function (id, currentStatus) {
     const statuses = ['Aguardando Preenchimento', 'Pendente', 'Baixado', 'Produção', 'Concluído', 'Entregue', 'Cancelado'];
     let options = statuses.map(s => `<option value="${s}" style="background:#202024; color:#E1E1E6;" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
-    
+
     const modal = document.createElement('div');
     modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;";
     modal.innerHTML = `
@@ -612,26 +612,26 @@ window.changeStatus = async function(id, currentStatus) {
     document.body.appendChild(modal);
 };
 
-window.confirmStatusChange = async function(id, newStatus) {
+window.confirmStatusChange = async function (id, newStatus) {
     const { error } = await db.from('sublimaster_pedidos').update({ status: newStatus }).eq('id', id);
     if (error) alert("Erro ao mudar status: " + error.message);
     else loadOrders();
 };
 
 // 7. SISTEMA DE ABAS
-window.switchTab = function(tabId) {
+window.switchTab = function (tabId) {
     document.getElementById('tab-pedidos').style.display = 'none';
     document.getElementById('tab-dashboard').style.display = 'none';
-    
+
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
         btn.style.borderBottomColor = 'transparent';
         btn.style.color = 'var(--text-hint)';
     });
-    
+
     document.getElementById(tabId).style.display = 'block';
     const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`);
-    if(activeBtn) {
+    if (activeBtn) {
         activeBtn.classList.add('active');
         activeBtn.style.borderBottomColor = 'var(--accent)';
         activeBtn.style.color = 'var(--text-main)';
@@ -641,45 +641,45 @@ window.switchTab = function(tabId) {
 };
 
 function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
 
-window.gerarLinkMagico = async function() {
+window.gerarLinkMagico = async function () {
     const ref = document.getElementById('referencia').value.trim();
     const nome = document.getElementById('cliente').value.trim();
     const validadeHoras = parseInt(document.getElementById('link-validade').value) || 48;
     const dataEntregaRaw = document.getElementById('data-entrega').value;
     const msg = document.getElementById('save-msg');
-    
+
     if (!nome && !ref) {
         msg.style.color = "#ff5555";
         msg.innerText = "Digite o nome do cliente ou a referência!";
         setTimeout(() => msg.innerText = "", 4000);
         return;
     }
-    
+
     // Formata a data de entrega
     let strEntrega = "";
     if (dataEntregaRaw) {
         const [y, m, d] = dataEntregaRaw.split('-');
         strEntrega = ` - Entrega: ${d}/${m}/${y}`;
     }
-    
+
     let clienteStr = "";
     if (ref && nome) clienteStr = ref + " | " + nome + strEntrega;
     else if (ref) clienteStr = ref + " | " + strEntrega;
     else clienteStr = " | " + nome + strEntrega;
-    
+
     msg.style.color = "var(--text-main)";
     msg.innerText = "Gerando Link...";
-    
+
     const token = generateUUID();
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + validadeHoras);
-    
+
     const { error } = await db
         .from('sublimaster_pedidos')
         .insert([
@@ -693,7 +693,7 @@ window.gerarLinkMagico = async function() {
                 cliente_view: true
             }
         ]);
-        
+
     if (error) {
         msg.style.color = "#ff5555";
         msg.innerText = "Erro ao gerar: " + error.message;
@@ -743,17 +743,17 @@ async function suggestNextReference() {
         const prefix = match[1];
         const numStr = match[2];
         const suffix = match[3];
-        
+
         const currentYear = new Date().getFullYear().toString();
         const lastYear = (new Date().getFullYear() - 1).toString();
-        
+
         // Se o único número for o próprio ano, e houver texto depois (Ex: PED-2026-INTERCLASSE)
         // Isso significa que ele não usou número sequencial, então forçamos o reinício do padrão
         if ((numStr === currentYear || numStr === lastYear) && suffix.trim() !== "") {
             document.getElementById('referencia').value = `PED-${currentYear}-0001`;
             return;
         }
-        
+
         let finalPrefix = prefix;
         let nextNumStr = "";
 
@@ -770,7 +770,7 @@ async function suggestNextReference() {
                 nextNumStr = nextNumStr.padStart(numStr.length, '0');
             }
         }
-        
+
         // Remove o sufixo (tudo o que o usuário digitar APÓS o número) para limpar o próximo
         const nextRef = finalPrefix + nextNumStr;
         document.getElementById('referencia').value = nextRef;
@@ -931,7 +931,7 @@ async function refreshDashboard() {
             const criado = new Date(p.created_at);
             const horasAtras = Math.round((now - criado) / (1000 * 60 * 60));
             let tempoStr = horasAtras < 1 ? 'Agora' : horasAtras < 24 ? horasAtras + 'h atrás' : Math.round(horasAtras / 24) + ' dia(s) atrás';
-            
+
             lHtml += '<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border);">'
                 + '<div><i class="ph ph-hourglass-high" style="color:#aaa; margin-right:8px;"></i>' + nomeVisual + '</div>'
                 + '<span style="color:var(--text-hint); font-size:0.85rem;">' + tempoStr + '</span>'
@@ -947,10 +947,10 @@ function animateKPI(elementId, target) {
     if (!el) return;
     const current = parseInt(el.textContent) || 0;
     if (current === target) return;
-    
+
     const duration = 600;
     const start = performance.now();
-    
+
     function step(timestamp) {
         const elapsed = timestamp - start;
         const progress = Math.min(elapsed / duration, 1);
