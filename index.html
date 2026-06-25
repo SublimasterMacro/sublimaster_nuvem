@@ -16,6 +16,17 @@
     <link rel="stylesheet" href="style.css?v=22">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Previne a piscada da tela de login
+        if (localStorage.getItem('sublimaster_codigo')) {
+            document.documentElement.classList.add('has-session');
+        }
+    </script>
+    <style>
+        html.has-session #login-screen { display: none !important; }
+        html.has-session #dashboard-screen { display: block !important; opacity: 0.5; pointer-events: none; }
+    </style>
 </head>
 <body>
     <div class="bg-animated"></div>
@@ -221,6 +232,6 @@
         </main>
     </div>
 
-    <script src="app.js?v=33"></script>
+    <script src="app.js?v=34"></script>
 </body>
 </html>

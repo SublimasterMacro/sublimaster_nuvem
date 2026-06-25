@@ -24,6 +24,7 @@ async function checkSession() {
         } else {
             // Licença não é mais válida ou revogada, limpar sessão
             localStorage.removeItem('sublimaster_codigo');
+            document.documentElement.classList.remove('has-session');
         }
     }
 }
@@ -70,6 +71,7 @@ document.getElementById('btn-login').addEventListener('click', async () => {
 function forceLogout(message = null) {
     if (message) alert(message);
     localStorage.removeItem('sublimaster_codigo');
+    document.documentElement.classList.remove('has-session');
     loginScreen.classList.remove('hidden');
     dashboardScreen.classList.add('hidden');
     currentCode = null;
@@ -96,6 +98,7 @@ setInterval(async () => {
 
 // TROCAR TELA
 async function showDashboard() {
+    document.documentElement.classList.remove('has-session');
     loginScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
     
