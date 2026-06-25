@@ -504,14 +504,14 @@ async function loadOrders() {
                         <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr}${pecasInfo}
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                    <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
+                <div style="display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:12px;">
                     <div class="actions" style="display:flex; gap: 8px;">
                         <button class="btn-icon-only" style="color:var(--accent);" onclick="shareOrderLink('${pedido.id}')" title="Copiar Link do Cliente"><i class="ph ph-share-network"></i></button>
                         <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
                         <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
                         <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
                     </div>
+                    <span class="status-tag ${statusClass}" style="margin:0;">${statusIcon} ${pedido.status}</span>
                 </div>
             </div>
         `;
