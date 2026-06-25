@@ -74,19 +74,19 @@ async function initClientApp() {
         formContainer.classList.add('hidden');
         readonlyContainer.classList.remove('hidden');
         renderReadonlyTable(data.dados_pedido);
+    }
+    
+    // Buscar telefone da confecção para o card de ajuda (visível em todas as telas)
+    const { data: licenseData } = await db
+        .from('licencas_v2')
+        .select('telefone')
+        .eq('chave', data.codigo_acesso)
+        .single();
         
-        // Buscar telefone da confecção para o card de ajuda
-        const { data: licenseData } = await db
-            .from('licencas_v2')
-            .select('telefone')
-            .eq('chave', data.codigo_acesso)
-            .single();
-            
-        if (licenseData && licenseData.telefone) {
-            document.getElementById('help-card').style.display = 'block';
-            document.getElementById('support-phone-text').innerText = licenseData.telefone;
-            document.getElementById('btn-support-whatsapp').href = `https://wa.me/55${licenseData.telefone.replace(/\D/g, '')}`;
-        }
+    if (licenseData && licenseData.telefone) {
+        document.getElementById('help-card').style.display = 'block';
+        document.getElementById('support-phone-text').innerText = licenseData.telefone;
+        document.getElementById('btn-support-whatsapp').href = `https://wa.me/55${licenseData.telefone.replace(/\D/g, '')}`;
     }
 }
 
