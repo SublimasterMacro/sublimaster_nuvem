@@ -487,10 +487,7 @@ async function loadOrders() {
             nomeVisual = refP + pts[1];
         }
 
-        let liHtml = "";
 
-        if (pedido.status === 'Aguardando Preenchimento') {
-            const urlBase = window.location.origin + window.location.pathname.replace('index.html', '');
         let pecasInfo = '';
         if (pedido.status !== 'Aguardando Preenchimento') {
             pecasInfo = ` &bull; <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)`;
