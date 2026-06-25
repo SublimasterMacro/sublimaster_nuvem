@@ -500,7 +500,7 @@ async function loadOrders() {
             <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
                 <div style="flex: 1; min-width: 200px;">
                     <strong style="font-size: 1.05rem;">${nomeVisual}</strong>
-                    <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <div style="font-size:13px; color:var(--text-hint); margin-top:2px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                         <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr}${pecasInfo}
                     </div>
                 </div>
