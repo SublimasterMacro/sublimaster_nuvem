@@ -104,12 +104,12 @@ async function showDashboard() {
     d.setDate(d.getDate() + 20);
     const dataFormatada = d.toISOString().split('T')[0];
     if(document.getElementById('data-entrega')) document.getElementById('data-entrega').value = dataFormatada;
-    if(document.getElementById('link-data-entrega')) document.getElementById('link-data-entrega').value = dataFormatada;
 
     window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
     if (tbodyItens.children.length === 0) adicionarLinha();
+    setupSmartButton();
 
     // Decide a aba inicial: Dashboard (se tem dados) ou Meus Pedidos (se vazio)
     const { count, error } = await db
@@ -133,9 +133,13 @@ function adicionarLinha() {
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro"></td>
         <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="P, M, G..." style="text-transform:uppercase;"></td>
         <td><input type="number" class="inp-qtd" value="1" min="1" style="width:70px;"></td>
-        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove()" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
+        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove(); verificarIntencaoDoUsuario();" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
     `;
     tbodyItens.appendChild(tr);
+    // Adiciona listeners de digitação nos inputs da nova linha para detectar intenção
+    tr.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('input', verificarIntencaoDoUsuario);
+    });
 }
 window.adicionarLinha = adicionarLinha; // expõe para o onclick no HTML
 
@@ -152,8 +156,75 @@ document.getElementById('btn-clear-list').addEventListener('click', () => {
 
 let editingOrderId = null;
 
-// 4. LANÇAR OU ATUALIZAR PEDIDO (POST/UPDATE)
+// =====================================================================
+// BOTÃO INTELIGENTE — Detecta se o usuário quer gerar link ou enviar pedido
+// =====================================================================
+
+function verificarIntencaoDoUsuario() {
+    const btnSalvar = document.getElementById('btn-salvar');
+    if (!btnSalvar || editingOrderId) return; // Não muda nada durante edição
+
+    const linhas = tbodyItens.querySelectorAll('tr');
+    let temConteudoNaTabela = false;
+
+    linhas.forEach(tr => {
+        const nome = tr.querySelector('.inp-nome');
+        const numero = tr.querySelector('.inp-numero');
+        const adic = tr.querySelector('.inp-adic');
+        const tamanho = tr.querySelector('.inp-tamanho');
+        if ((nome && nome.value.trim()) || (numero && numero.value.trim()) || 
+            (adic && adic.value.trim()) || (tamanho && tamanho.value.trim())) {
+            temConteudoNaTabela = true;
+        }
+    });
+
+    const grupoValidade = document.getElementById('grupo-validade');
+
+    if (temConteudoNaTabela) {
+        // Modo PEDIDO — botão verde
+        if (btnSalvar.dataset.modo !== 'pedido') {
+            btnSalvar.dataset.modo = 'pedido';
+            btnSalvar.innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
+            btnSalvar.style.background = 'var(--accent)';
+            btnSalvar.style.transition = 'all 0.3s ease';
+            if (grupoValidade) grupoValidade.style.display = 'none';
+        }
+    } else {
+        // Modo LINK — botão roxo/destaque
+        if (btnSalvar.dataset.modo !== 'link') {
+            btnSalvar.dataset.modo = 'link';
+            btnSalvar.innerHTML = '<i class="ph ph-link"></i><span>Gerar Link Único</span>';
+            btnSalvar.style.background = 'linear-gradient(135deg, #7c3aed, #a855f7)';
+            btnSalvar.style.transition = 'all 0.3s ease';
+            if (grupoValidade) grupoValidade.style.display = '';
+        }
+    }
+}
+window.verificarIntencaoDoUsuario = verificarIntencaoDoUsuario;
+
+function setupSmartButton() {
+    // Adiciona listeners nos inputs existentes da tabela
+    tbodyItens.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('input', verificarIntencaoDoUsuario);
+    });
+    // Estado inicial
+    verificarIntencaoDoUsuario();
+}
+
+// 4. LANÇAR OU ATUALIZAR PEDIDO / GERAR LINK (BOTÃO ÚNICO INTELIGENTE)
 document.getElementById('btn-salvar').addEventListener('click', async () => {
+    const btnSalvar = document.getElementById('btn-salvar');
+    const modo = btnSalvar.dataset.modo || 'link';
+
+    // Se está em modo edição OU modo pedido, chama enviarPedido
+    if (editingOrderId || modo === 'pedido') {
+        await enviarPedido();
+    } else {
+        await gerarLinkMagico();
+    }
+});
+
+async function enviarPedido() {
     const clienteName = document.getElementById('cliente').value.trim();
     const referencia = document.getElementById('referencia').value.trim();
     const dataEntregaRaw = document.getElementById('data-entrega').value;
@@ -238,10 +309,11 @@ document.getElementById('btn-salvar').addEventListener('click', async () => {
             adicionarLinha();
             loadOrders();
             suggestNextReference();
+            verificarIntencaoDoUsuario();
             setTimeout(() => msg.innerText = "", 4000);
         }
     }
-});
+}
 
 function cancelEditMode() {
     editingOrderId = null;
@@ -250,6 +322,8 @@ function cancelEditMode() {
     tbodyItens.innerHTML = "";
     adicionarLinha();
     document.getElementById('btn-salvar').innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
+    document.getElementById('btn-salvar').dataset.modo = 'pedido';
+    document.getElementById('btn-salvar').style.background = 'var(--accent)';
     
     const btnCancel = document.getElementById('btn-cancel-edit');
     if (btnCancel) btnCancel.remove();
@@ -568,10 +642,9 @@ window.confirmStatusChange = async function(id, newStatus) {
     else loadOrders();
 };
 
-// 7. SISTEMA DE ABAS E GERAÇÃO DE LINKS
+// 7. SISTEMA DE ABAS
 window.switchTab = function(tabId) {
     document.getElementById('tab-pedidos').style.display = 'none';
-    document.getElementById('tab-links').style.display = 'none';
     document.getElementById('tab-dashboard').style.display = 'none';
     
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -599,15 +672,16 @@ function generateUUID() {
 }
 
 window.gerarLinkMagico = async function() {
-    const ref = document.getElementById('link-referencia').value.trim();
-    const nome = document.getElementById('link-cliente').value.trim();
-    const validadeHoras = parseInt(document.getElementById('link-validade').value);
-    const dataEntregaRaw = document.getElementById('link-data-entrega').value;
-    const msg = document.getElementById('link-msg');
+    const ref = document.getElementById('referencia').value.trim();
+    const nome = document.getElementById('cliente').value.trim();
+    const validadeHoras = parseInt(document.getElementById('link-validade').value) || 48;
+    const dataEntregaRaw = document.getElementById('data-entrega').value;
+    const msg = document.getElementById('save-msg');
     
-    if (!nome) {
+    if (!nome && !ref) {
         msg.style.color = "#ff5555";
-        msg.innerText = "Digite o nome ou a equipe do cliente!";
+        msg.innerText = "Digite o nome do cliente ou a referência!";
+        setTimeout(() => msg.innerText = "", 4000);
         return;
     }
     
@@ -618,10 +692,10 @@ window.gerarLinkMagico = async function() {
         strEntrega = ` - Entrega: ${d}/${m}/${y}`;
     }
     
-    let clienteStr = nome + strEntrega;
-    if (ref) {
-        clienteStr = ref + " | " + nome + strEntrega;
-    }
+    let clienteStr = "";
+    if (ref && nome) clienteStr = ref + " | " + nome + strEntrega;
+    else if (ref) clienteStr = ref + " | " + strEntrega;
+    else clienteStr = " | " + nome + strEntrega;
     
     msg.style.color = "var(--text-main)";
     msg.innerText = "Gerando Link...";
@@ -637,7 +711,7 @@ window.gerarLinkMagico = async function() {
                 codigo_acesso: currentCode,
                 cliente: clienteStr,
                 status: 'Aguardando Preenchimento',
-                dados_pedido: [], // Array vazio
+                dados_pedido: [],
                 link_token: token,
                 expires_at: expiresAt.toISOString(),
                 cliente_view: true
@@ -650,10 +724,13 @@ window.gerarLinkMagico = async function() {
     } else {
         msg.style.color = "var(--accent)";
         msg.innerText = "✅ Link gerado com sucesso!";
-        document.getElementById('link-cliente').value = "";
-        document.getElementById('link-referencia').value = "";
+        document.getElementById('cliente').value = "";
+        document.getElementById('referencia').value = "";
+        tbodyItens.innerHTML = "";
+        adicionarLinha();
         loadOrders();
         suggestNextReference();
+        verificarIntencaoDoUsuario();
         setTimeout(() => msg.innerText = "", 4000);
     }
 };
@@ -673,7 +750,6 @@ async function suggestNextReference() {
     if (error || !data) {
         const currentYear = new Date().getFullYear();
         document.getElementById('referencia').value = `PED-${currentYear}-0001`;
-        document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
         return;
     }
 
@@ -699,7 +775,6 @@ async function suggestNextReference() {
         // Isso significa que ele não usou número sequencial, então forçamos o reinício do padrão
         if ((numStr === currentYear || numStr === lastYear) && suffix.trim() !== "") {
             document.getElementById('referencia').value = `PED-${currentYear}-0001`;
-            document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
             return;
         }
         
@@ -723,12 +798,10 @@ async function suggestNextReference() {
         // Remove o sufixo (tudo o que o usuário digitar APÓS o número) para limpar o próximo
         const nextRef = finalPrefix + nextNumStr;
         document.getElementById('referencia').value = nextRef;
-        document.getElementById('link-referencia').value = nextRef;
     } else {
         // Se não encontrou número nenhum, sugere o padrão inicial
         const currentYear = new Date().getFullYear();
         document.getElementById('referencia').value = `PED-${currentYear}-0001`;
-        document.getElementById('link-referencia').value = `PED-${currentYear}-0001`;
     }
 }
 // =============================================================================
@@ -867,6 +940,7 @@ async function refreshDashboard() {
 
     // ---------- Links Aguardando ----------
     const linksDiv = document.getElementById('dash-links-aguardando');
+    if (!linksDiv) return; // Elemento pode não existir mais
     if (aguardando.length === 0) {
         linksDiv.innerHTML = '<p style="color: var(--text-hint);"><i class="ph ph-check" style="margin-right:6px;"></i>Nenhum link pendente no momento.</p>';
     } else {

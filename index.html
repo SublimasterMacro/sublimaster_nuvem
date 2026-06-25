@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=20">
+    <link rel="stylesheet" href="style.css?v=21">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -59,7 +59,6 @@
                 <!-- Admin Tabs -->
                 <div class="admin-tabs" style="display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                     <button class="tab-btn" onclick="switchTab('tab-pedidos')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Meus Pedidos</button>
-                    <button class="tab-btn" onclick="switchTab('tab-links')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-link" style="margin-right: 8px;"></i>Links para Clientes</button>
                     <button class="tab-btn" onclick="switchTab('tab-dashboard')" style="background: none; border: none; color: var(--text-hint); font-weight: 500; cursor: pointer; padding: 8px 16px; border-bottom: 2px solid transparent;"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
                 </div>
             </div>
@@ -86,6 +85,14 @@
                     <div class="input-group" style="flex: 1; margin: 0;">
                         <i class="ph ph-calendar-blank icon-input"></i>
                         <input type="date" id="data-entrega" title="Data de Entrega" style="padding-left: 48px; width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; transition: all 0.3s ease; height: 50px;">
+                    </div>
+                    <div class="input-group" id="grupo-validade" style="flex: 0.8; margin: 0; display: none;">
+                        <i class="ph ph-hourglass icon-input"></i>
+                        <select id="link-validade" style="width: 100%; padding: 14px 16px 14px 48px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; appearance: none; cursor: pointer; transition: all 0.3s ease; height: 50px;">
+                            <option value="24" style="background: var(--bg-dark);">24 horas</option>
+                            <option value="48" selected style="background: var(--bg-dark);">48 horas</option>
+                            <option value="168" style="background: var(--bg-dark);">7 dias</option>
+                        </select>
                     </div>
                 </div>
                 
@@ -127,15 +134,25 @@
 
                 <div class="action-footer mt-5">
                     <p id="save-msg" class="msg-success mr-3"></p>
-                    <button id="btn-salvar" class="btn-primary btn-glow">
-                        <i class="ph ph-paper-plane-tilt"></i>
-                        <span>Enviar para Confecção</span>
+                    <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link">
+                        <i class="ph ph-link"></i>
+                        <span>Gerar Link Único</span>
                     </button>
                 </div>
             </div>
             
-            <!-- Histórico -->
+            <!-- Links Ativos (Aguardando) -->
             <div class="glass-panel main-card history-card mt-4 slide-up" style="animation-delay: 0.1s;">
+                <div class="card-header border-bottom mb-3">
+                    <h3><i class="ph ph-hourglass-high text-accent"></i> Links Aguardando Preenchimento</h3>
+                </div>
+                <ul id="lista-links" class="order-list">
+                    <!-- Links via JS -->
+                </ul>
+            </div>
+
+            <!-- Histórico -->
+            <div class="glass-panel main-card history-card mt-4 slide-up" style="animation-delay: 0.2s;">
                 <div class="card-header border-bottom mb-3">
                     <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico Recente</h3>
                 </div>
@@ -144,60 +161,6 @@
                 </ul>
             </div>
             </div> <!-- Fim tab-pedidos -->
-            
-            <!-- ABA 2: LINKS MÁGICOS -->
-            <div id="tab-links" class="tab-content" style="display: none;">
-                <!-- Gerar Link Card -->
-                <div class="glass-panel main-card slide-up">
-                    <div class="card-header">
-                        <h3><i class="ph ph-magic-wand text-accent"></i> Gerar Link para Cliente</h3>
-                        <p style="color: var(--text-hint); font-size: 0.9rem; margin-top: 8px;">Envie um link para o próprio cliente preencher os tamanhos e nomes.</p>
-                    </div>
-                    
-                    <div class="flex-row mt-4">
-                        <div class="input-group" style="flex: 1; margin: 0;">
-                            <i class="ph ph-hash icon-input"></i>
-                            <input type="text" id="link-referencia" placeholder="Ref. / Nº">
-                        </div>
-                        <div class="input-group" style="flex: 2; margin: 0;">
-                            <i class="ph ph-user icon-input"></i>
-                            <input type="text" id="link-cliente" placeholder="Nome do Cliente ou Equipe">
-                        </div>
-                        <div class="input-group" style="flex: 1; margin: 0;">
-                            <i class="ph ph-hourglass icon-input"></i>
-                            <select id="link-validade" style="width: 100%; padding: 14px 16px 14px 48px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; appearance: none; cursor: pointer; transition: all 0.3s ease;">
-                                <option value="24" style="background: var(--bg-dark);">Válido por 24 horas</option>
-                                <option value="48" style="background: var(--bg-dark);">Válido por 48 horas</option>
-                                <option value="168" style="background: var(--bg-dark);">Válido por 7 dias</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="action-footer mt-4" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
-                        <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px;">
-                            <i class="ph ph-calendar-blank icon-input"></i>
-                            <input type="date" id="link-data-entrega" title="Data de Entrega" style="padding-left: 48px; width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; transition: all 0.3s ease; height: 50px;">
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2; flex-wrap: wrap;">
-                            <p id="link-msg" class="msg-success mr-3"></p>
-                            <button id="btn-gerar-link" class="btn-primary btn-glow" onclick="gerarLinkMagico()">
-                                <i class="ph ph-link"></i>
-                                <span>Gerar Link Único</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lista de Links Ativos -->
-                <div class="glass-panel main-card history-card mt-4 slide-up" style="animation-delay: 0.1s;">
-                    <div class="card-header border-bottom mb-3">
-                        <h3><i class="ph ph-list-dashes text-accent"></i> Links Ativos (Aguardando)</h3>
-                    </div>
-                    <ul id="lista-links" class="order-list">
-                        <!-- Links via JS -->
-                    </ul>
-                </div>
-            </div> <!-- Fim tab-links -->
 
             <!-- ABA 3: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content" style="display: none;">
@@ -256,6 +219,6 @@
         </main>
     </div>
 
-    <script src="app.js?v=32"></script>
+    <script src="app.js?v=33"></script>
 </body>
 </html>

@@ -2,9 +2,9 @@
 -- SETUP: SUPORTE A MÚLTIPLAS MÁQUINAS POR LICENÇA (CENÁRIO 1)
 -- =========================================================================================
 
--- 1. Adicionar a coluna max_maquinas na tabela existente licenses
+-- 1. Adicionar a coluna max_machines na tabela existente licenses
 -- O padrão será 1, assim todas as licenças existentes (e trials) continuarão funcionando
-ALTER TABLE public.licenses ADD COLUMN IF NOT EXISTS max_maquinas integer DEFAULT 1;
+ALTER TABLE public.licenses ADD COLUMN IF NOT EXISTS max_machines integer DEFAULT 1;
 
 -- Opcional: Se a tabela licenses já tinha uma coluna machine_id, 
 -- não vamos deletá-la para não quebrar scripts antigos, mas vamos parar de usar.
@@ -42,7 +42,7 @@ BEGIN
     END IF;
 
     -- 2. Licença expirada ou inativa
-    IF v_licenca.status != 'ativa' THEN
+    IF v_licenca.status != 'active' THEN
         RETURN jsonb_build_object('status', 'error', 'message', 'Sua licença está inativa ou expirada.');
     END IF;
     IF v_licenca.expires_at IS NOT NULL AND v_licenca.expires_at < now() THEN
@@ -65,7 +65,7 @@ BEGIN
     -- 4. É uma máquina nova tentando usar a chave. Verifica o limite.
     SELECT COUNT(*) INTO v_total_ativas FROM public.license_activations WHERE license_key = p_license_key;
 
-    IF v_total_ativas >= v_licenca.max_maquinas THEN
+    IF v_total_ativas >= v_licenca.max_machines THEN
         RETURN jsonb_build_object(
             'status', 'error', 
             'message', 'Limite de máquinas atingido. Desative um computador ou contate o suporte.'
