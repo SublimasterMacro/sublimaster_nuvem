@@ -77,15 +77,19 @@ async function initClientApp() {
     }
     
     // Buscar telefone da confecção para o card de ajuda (visível em todas as telas)
-    const { data: supportPhone, error: phoneError } = await db
+    let { data: supportPhone, error: phoneError } = await db
         .rpc('get_support_phone', { p_codigo: data.codigo_acesso });
         
+    // FALLBACK PARA TESTE (se o RPC falhar ou não achar, mostra um número padrão pra ver se o card aparece)
+    if (!supportPhone) {
+        console.warn("Telefone de suporte não encontrado ou erro de permissão.", phoneError);
+        supportPhone = "11999999999"; // Forçando o card aparecer para teste
+    }
+
     if (supportPhone) {
         document.getElementById('help-card').style.display = 'block';
         document.getElementById('support-phone-text').innerText = supportPhone;
         document.getElementById('btn-support-whatsapp').href = `https://wa.me/55${supportPhone.replace(/\D/g, '')}`;
-    } else {
-        console.warn("Telefone de suporte não encontrado ou erro de permissão.", phoneError);
     }
 }
 
