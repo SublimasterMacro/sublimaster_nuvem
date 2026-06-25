@@ -417,20 +417,15 @@ async function loadOrders() {
         .order('created_at', { ascending: false })
         .limit(50);
 
-    const listaLinks = document.getElementById('lista-links');
-
     if (error) {
         lista.innerHTML = "Erro de conexão.";
-        if(listaLinks) listaLinks.innerHTML = "Erro de conexão.";
         return;
     }
 
     lista.innerHTML = "";
-    if(listaLinks) listaLinks.innerHTML = "";
 
     if (data.length === 0) {
         lista.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum pedido foi enviado para este código ainda.</p>";
-        if(listaLinks) listaLinks.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum link ativo no momento.</p>";
         return;
     }
 
@@ -496,57 +491,32 @@ async function loadOrders() {
 
         if (pedido.status === 'Aguardando Preenchimento') {
             const urlBase = window.location.origin + window.location.pathname.replace('index.html', '');
-            const linkMagico = `${urlBase}cliente.html?token=${pedido.link_token}`;
-            
-            let expText = "";
-            if (pedido.expires_at) {
-                const expDate = new Date(pedido.expires_at);
-                expText = `(Expira: ${expDate.toLocaleDateString('pt-BR')} às ${expDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})})`;
-            }
-
-            liHtml = `
-                <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <strong style="font-size: 1.05rem;"><i class="ph ph-magic-wand text-accent"></i> ${nomeVisual}</strong>
-                        <div style="font-size:13px; color:var(--text-hint); margin-top:6px;">
-                            ${dataStr} às ${horaStr} &bull; ${expText}
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                        <span class="status-tag status-pendente"><i class="ph-fill ph-hourglass-high"></i> Aguardando</span>
-                        <div class="actions" style="display:flex; gap: 8px;">
-                            <button class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="navigator.clipboard.writeText('${linkMagico}'); alert('Link copiado!');" title="Copiar Link"><i class="ph ph-copy"></i> Copiar Link</button>
-                            <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            li.innerHTML = liHtml;
-            if(listaLinks) listaLinks.appendChild(li);
-        } else {
-            liHtml = `
-                <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <strong style="font-size: 1.05rem;">${nomeVisual}</strong>
-                        <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                            <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr} &bull; 
-                            <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                        <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
-                        <div class="actions" style="display:flex; gap: 8px;">
-                            <button class="btn-icon-only" style="color:var(--accent);" onclick="shareOrderLink('${pedido.id}')" title="Copiar Link do Cliente"><i class="ph ph-share-network"></i></button>
-                            <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
-                            <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
-                            <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            li.innerHTML = liHtml;
-            lista.appendChild(li);
+        let pecasInfo = '';
+        if (pedido.status !== 'Aguardando Preenchimento') {
+            pecasInfo = ` &bull; <i class="ph ph-t-shirt"></i> ${totalPecas} Peça(s)`;
         }
+
+        let liHtml = `
+            <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+                <div style="flex: 1; min-width: 200px;">
+                    <strong style="font-size: 1.05rem;">${nomeVisual}</strong>
+                    <div style="font-size:13px; color:var(--text-hint); margin-top:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <i class="ph ph-calendar-blank"></i> ${dataStr} às ${horaStr}${pecasInfo}
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                    <span class="status-tag ${statusClass}">${statusIcon} ${pedido.status}</span>
+                    <div class="actions" style="display:flex; gap: 8px;">
+                        <button class="btn-icon-only" style="color:var(--accent);" onclick="shareOrderLink('${pedido.id}')" title="Copiar Link do Cliente"><i class="ph ph-share-network"></i></button>
+                        <button class="btn-icon-only btn-edit" onclick="editOrder('${pedido.id}')" title="Editar"><i class="ph ph-pencil"></i></button>
+                        <button class="btn-icon-only btn-status" onclick="changeStatus('${pedido.id}', '${pedido.status}')" title="Mudar Status"><i class="ph ph-arrows-clockwise"></i></button>
+                        <button class="btn-icon-only btn-delete" style="color:#ff5555;" onclick="deleteOrder('${pedido.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        `;
+        li.innerHTML = liHtml;
+        lista.appendChild(li);
     });
 }
 
