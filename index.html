@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=26">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -222,6 +222,26 @@
             </div> <!-- Fim tab-dashboard -->
 
         </main>
+
+        <!-- App Footer -->
+        <footer style="margin-top: 40px; padding: 20px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; font-size: 0.85rem; color: var(--text-hint); background: rgba(0,0,0,0.2);">
+            <!-- Esquerda: Status -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent-glow); animation: pulse 2s infinite;"></span>
+                <span style="font-weight: 500; letter-spacing: 0.5px;">Sistema Online</span>
+            </div>
+            
+            <!-- Centro: Copyright -->
+            <div style="font-weight: 400; opacity: 0.7;">
+                &copy; 2026 Sublimaster
+            </div>
+            
+            <!-- Direita: Suporte -->
+            <div style="display: flex; align-items: center; gap: 6px; opacity: 0.6; cursor: not-allowed;" title="Suporte em breve">
+                <i class="ph ph-headset" style="font-size: 1.1rem;"></i>
+                <span>Suporte</span>
+            </div>
+        </footer>
     </div>
 
     <script src="app.js?v=41"></script>
