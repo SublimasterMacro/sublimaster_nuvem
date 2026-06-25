@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=21">
+    <link rel="stylesheet" href="style.css?v=22">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -82,16 +82,12 @@
                         <i class="ph ph-user icon-input"></i>
                         <input type="text" id="cliente" placeholder="Nome do Cliente (Ex: Time Águia)">
                     </div>
-                    <div class="input-group" style="flex: 1; margin: 0;">
-                        <i class="ph ph-calendar-blank icon-input"></i>
-                        <input type="date" id="data-entrega" title="Data de Entrega" style="padding-left: 48px; width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; transition: all 0.3s ease; height: 50px;">
-                    </div>
-                    <div class="input-group" id="grupo-validade" style="flex: 0.8; margin: 0; display: none;">
+                    <div class="input-group" id="grupo-validade" style="flex: 1; margin: 0;">
                         <i class="ph ph-hourglass icon-input"></i>
                         <select id="link-validade" style="width: 100%; padding: 14px 16px 14px 48px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; appearance: none; cursor: pointer; transition: all 0.3s ease; height: 50px;">
-                            <option value="24" style="background: var(--bg-dark);">24 horas</option>
-                            <option value="48" selected style="background: var(--bg-dark);">48 horas</option>
-                            <option value="168" style="background: var(--bg-dark);">7 dias</option>
+                            <option value="24" style="background: var(--bg-dark);">Validade: 24 horas</option>
+                            <option value="48" selected style="background: var(--bg-dark);">Validade: 48 horas</option>
+                            <option value="168" style="background: var(--bg-dark);">Validade: 7 dias</option>
                         </select>
                     </div>
                 </div>
@@ -132,12 +128,18 @@
                     </button>
                 </div>
 
-                <div class="action-footer mt-5">
-                    <p id="save-msg" class="msg-success mr-3"></p>
-                    <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link">
-                        <i class="ph ph-link"></i>
-                        <span>Gerar Link Único</span>
-                    </button>
+                <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
+                    <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px;">
+                        <i class="ph ph-calendar-blank icon-input"></i>
+                        <input type="date" id="data-entrega" title="Data de Entrega" style="padding-left: 48px; width: 100%; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: var(--font-body); font-size: 1rem; outline: none; transition: all 0.3s ease; height: 50px;">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2; flex-wrap: wrap;">
+                        <p id="save-msg" class="msg-success mr-3"></p>
+                        <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link">
+                            <i class="ph ph-link"></i>
+                            <span>Gerar Link Único</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             
