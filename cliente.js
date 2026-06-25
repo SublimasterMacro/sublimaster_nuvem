@@ -77,16 +77,15 @@ async function initClientApp() {
     }
     
     // Buscar telefone da confecção para o card de ajuda (visível em todas as telas)
-    const { data: licenseData } = await db
-        .from('licencas_v2')
-        .select('telefone')
-        .eq('chave', data.codigo_acesso)
-        .single();
+    const { data: supportPhone, error: phoneError } = await db
+        .rpc('get_support_phone', { p_codigo: data.codigo_acesso });
         
-    if (licenseData && licenseData.telefone) {
+    if (supportPhone) {
         document.getElementById('help-card').style.display = 'block';
-        document.getElementById('support-phone-text').innerText = licenseData.telefone;
-        document.getElementById('btn-support-whatsapp').href = `https://wa.me/55${licenseData.telefone.replace(/\D/g, '')}`;
+        document.getElementById('support-phone-text').innerText = supportPhone;
+        document.getElementById('btn-support-whatsapp').href = `https://wa.me/55${supportPhone.replace(/\D/g, '')}`;
+    } else {
+        console.warn("Telefone de suporte não encontrado ou erro de permissão.", phoneError);
     }
 }
 
