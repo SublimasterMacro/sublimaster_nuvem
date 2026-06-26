@@ -18,7 +18,6 @@
 
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
-    color-scheme: dark;
 }
 
 * {
@@ -185,6 +184,10 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: #E1E1E6 !important;
     color: #E1E1E6 !important;
     caret-color: #E1E1E6 !important;
+}
+
+input[type="date"] {
+    color-scheme: dark;
 }
 
 /* Buttons */
