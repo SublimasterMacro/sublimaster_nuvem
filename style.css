@@ -152,27 +152,37 @@ h3 {
     font-size: 20px;
 }
 
-input {
+input, textarea, select {
     width: 100%;
-    padding: 14px 16px 14px 48px;
+    padding: 12px 14px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border);
     color: var(--text-main);
-    border-radius: 12px;
-    font-size: 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
     font-family: var(--font-body);
     transition: all 0.3s ease;
 }
 
-input:focus {
+input:focus, textarea:focus, select:focus {
     outline: none;
     border-color: var(--accent);
     background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 0 4px var(--accent-glow);
+    box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-input::placeholder {
-    color: #555555;
+input::placeholder, textarea::placeholder {
+    color: var(--text-hint);
+    opacity: 0.6;
+}
+
+/* Specific for Login Input with Icon */
+.input-group input, .input-group select {
+    padding: 14px 16px 14px 48px;
+    border-radius: 12px;
+    font-size: 1rem;
+    height: 50px;
+    appearance: none; /* removes default select styling */
 }
 
 /* Fix autofill background */
