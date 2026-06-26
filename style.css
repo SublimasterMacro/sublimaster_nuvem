@@ -152,7 +152,7 @@ h3 {
     font-size: 20px;
 }
 
-input, select, textarea {
+input {
     width: 100%;
     padding: 14px 16px 14px 48px;
     background: rgba(0, 0, 0, 0.2);
@@ -164,7 +164,7 @@ input, select, textarea {
     transition: all 0.3s ease;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus {
     outline: none;
     border-color: var(--accent);
     background: rgba(0, 0, 0, 0.4);
@@ -184,10 +184,6 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: #E1E1E6 !important;
     color: #E1E1E6 !important;
     caret-color: #E1E1E6 !important;
-}
-
-input[type="date"] {
-    color-scheme: dark;
 }
 
 /* Buttons */
