@@ -152,54 +152,38 @@ h3 {
     font-size: 20px;
 }
 
-input, textarea, select {
+input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 14px 16px 14px 48px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border);
     color: var(--text-main);
-    border-radius: 8px;
-    font-size: 0.95rem;
+    border-radius: 12px;
+    font-size: 1rem;
     font-family: var(--font-body);
     transition: all 0.3s ease;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus {
     outline: none;
     border-color: var(--accent);
     background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 0 3px var(--accent-glow);
+    box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
-input::placeholder, textarea::placeholder {
-    color: var(--text-hint);
-    opacity: 0.6;
-}
-
-/* Specific for Login Input with Icon */
-.input-group input, .input-group select {
-    padding: 14px 16px 14px 48px;
-    border-radius: 12px;
-    font-size: 1rem;
-    height: 50px;
+input::placeholder {
+    color: #555555;
 }
 
 /* Fix autofill background */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
-input:-webkit-autofill:active,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #161618 inset !important;
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
     -webkit-text-fill-color: #E1E1E6 !important;
     color: #E1E1E6 !important;
     caret-color: #E1E1E6 !important;
-    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Buttons */
