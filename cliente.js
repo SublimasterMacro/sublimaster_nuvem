@@ -83,6 +83,7 @@ async function initClientApp() {
     // FALLBACK PARA TESTE (se o RPC falhar ou não achar, mostra um número padrão pra ver se o card aparece)
     if (!supportPhone) {
         console.warn("Telefone de suporte não encontrado ou erro de permissão.", phoneError);
+        alert("INFO: Não achei o telefone no banco! Erro: " + JSON.stringify(phoneError));
     }
 
     if (supportPhone) {
