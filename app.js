@@ -428,7 +428,7 @@ async function loadOrders() {
     lista.innerHTML = "";
 
     if (data.length === 0) {
-        lista.innerHTML = "<p style='color:#999; font-size:13px;'>Nenhum pedido foi enviado para este código ainda.</p>";
+        lista.innerHTML = "<p style='color:#999; font-size:13px;'>Você ainda não possui nenhum pedido no histórico.</p>";
         return;
     }
 
