@@ -152,7 +152,7 @@ h3 {
     font-size: 20px;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 14px 16px 14px 48px;
     background: rgba(0, 0, 0, 0.2);
@@ -162,17 +162,21 @@ input {
     font-size: 1rem;
     font-family: var(--font-body);
     transition: all 0.3s ease;
+    height: 50px;
+    appearance: none;
+    outline: none;
 }
 
-input:focus {
+input:focus, select:focus {
     outline: none;
     border-color: var(--accent);
     background: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
-input::placeholder {
-    color: #555555;
+input::placeholder, textarea::placeholder {
+    color: var(--text-hint);
+    opacity: 0.6;
 }
 
 /* Fix autofill background */
@@ -292,6 +296,29 @@ button:active {
     gap: 12px;
 }
 
+/* Tabs */
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
 /* Dashboard Container */
 .dashboard-container {
     max-width: 1000px;
@@ -396,7 +423,7 @@ tr:last-child td {
     border-bottom: none;
 }
 
-td input {
+td input, td select {
     margin-bottom: 0;
     padding: 4px 8px;
     font-size: 0.85rem;
