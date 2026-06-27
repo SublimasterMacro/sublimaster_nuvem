@@ -172,7 +172,7 @@ window.salvarPedido = async function() {
         btnSalvar.disabled = false;
     } else {
         msg.style.color = "var(--accent)";
-        msg.innerText = "✅ Pedido enviado com sucesso!";
+        msg.innerText = "✅ Lista enviada com sucesso! Agradecemos a confiança.";
         renderStatus('Pendente');
         
         setTimeout(() => {

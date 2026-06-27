@@ -306,7 +306,7 @@ async function enviarPedido() {
             msg.innerText = "Erro: " + error.message;
         } else {
             msg.style.color = "var(--accent)";
-            msg.innerText = "✅ Sucesso! O CorelDRAW já pode baixar este pedido.";
+            msg.innerText = "✅ Lista enviada com sucesso! Agradecemos a confiança.";
             document.getElementById('cliente').value = "";
             document.getElementById('referencia').value = "";
             tbodyItens.innerHTML = "";
