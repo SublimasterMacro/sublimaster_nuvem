@@ -90,7 +90,15 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 setInterval(async () => {
     if (currentCode) {
         const { data, error } = await db.rpc('check_license_web', { p_chave: currentCode });
-        if (error || data !== true) {
+        
+        // Se houver erro de rede (internet oscilou), ignora e tenta na próxima
+        if (error) {
+            console.warn("Falha de rede ao checar sessão. Ignorando para não desconectar...");
+            return;
+        }
+        
+        // Só desconecta se o banco afirmar explicitamente que a licença é inválida
+        if (data === false) {
             forceLogout("Atenção: O código de acesso desta confecção foi alterado ou revogado.\n\nVocê foi desconectado por segurança.");
         }
     }
