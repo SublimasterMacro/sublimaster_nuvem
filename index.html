@@ -142,11 +142,16 @@
                 <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
-                        <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text;" autocomplete="off">
+                        <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text; padding-right: 44px;" autocomplete="off">
+                        <!-- Ícone calendário clicável que abre o picker nativo oculto -->
+                        <button type="button" onclick="document.getElementById('date-picker-hidden').showPicker ? document.getElementById('date-picker-hidden').showPicker() : document.getElementById('date-picker-hidden').click()" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; padding:4px; color:var(--text-hint); font-size:18px; display:flex; align-items:center;">
+                            <i class="ph ph-calendar-blank"></i>
+                        </button>
+                        <input type="date" id="date-picker-hidden" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px; top:0; left:0;" onchange="(function(){var v=document.getElementById('date-picker-hidden').value; if(v){var p=v.split('-'); document.getElementById('data-entrega').value=p[2]+'/'+p[1]+'/'+p[0];}})()">
                     </div>
                     <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2; flex-wrap: wrap;">
                         <p id="save-msg" class="msg-success mr-3"></p>
-                        <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link">
+                        <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link" style="height:50px;">
                             <i class="ph ph-link"></i>
                             <span>Gerar Link Único</span>
                         </button>
@@ -243,6 +248,6 @@
         </footer>
     </div>
 
-    <script src="app.js?v=50"></script>
+    <script src="app.js?v=51"></script>
 </body>
 </html>
