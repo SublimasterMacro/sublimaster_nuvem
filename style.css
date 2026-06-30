@@ -695,7 +695,7 @@ td input, td select {
 /* FOOTER                                                                     */
 /* ========================================================================= */
 .app-footer {
-    margin-top: 40px;
+    margin-top: auto;
     padding: 20px 40px;
     border-top: 1px solid var(--border);
     display: flex;
