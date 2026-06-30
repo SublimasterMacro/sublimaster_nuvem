@@ -171,6 +171,12 @@ input, select {
     outline: none;
 }
 
+/* Oculta o ícone nativo do browser no input[type=date] */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
 input:focus, select:focus {
     outline: none;
     border-color: var(--accent);
