@@ -86,7 +86,7 @@ document.getElementById('btn-logout').addEventListener('click', () => {
     forceLogout();
 });
 
-// Checagem contínua de sessão a cada 15 segundos
+// Checagem de sessão em segundo plano a cada 24 horas
 setInterval(async () => {
     if (currentCode) {
         const { data, error } = await db.rpc('check_license_web', { p_chave: currentCode });
@@ -102,7 +102,7 @@ setInterval(async () => {
             forceLogout("Atenção: O código de acesso desta confecção foi alterado ou revogado.\n\nVocê foi desconectado por segurança.");
         }
     }
-}, 15000);
+}, 86400000);
 
 // TROCAR TELA
 async function showDashboard() {
