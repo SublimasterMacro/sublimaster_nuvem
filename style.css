@@ -676,9 +676,31 @@ td input, td select {
     .dash-kpi-value {
         font-size: 1.4rem;
     }
+    .app-footer {
+        flex-direction: column !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 24px 16px !important;
+        gap: 20px !important;
+    }
 }
 
 /* ========================================================================= */
+/* FOOTER                                                                     */
+/* ========================================================================= */
+.app-footer {
+    margin-top: 40px;
+    padding: 20px 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: var(--text-hint);
+    background: rgba(0,0,0,0.2);
+}
 /* DASHBOARD                                                                  */
 /* ========================================================================= */
 
