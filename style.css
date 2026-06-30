@@ -171,10 +171,9 @@ input, select {
     outline: none;
 }
 
-/* Oculta o ícone nativo do browser no input[type=date] */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
+/* No input de data: oculta o ícone Phosphor da esquerda (mantém o nativo) */
+input[type="date"] {
+    padding-left: 16px;
 }
 
 input:focus, select:focus {
