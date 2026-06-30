@@ -661,16 +661,16 @@ td input, td select {
     }
 
     .dash-kpi-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
     }
 
     .dash-kpi-card {
-        padding: 16px 8px;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        gap: 8px;
+        padding: 16px 8px !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 8px !important;
     }
 
     .dash-kpi-value {
