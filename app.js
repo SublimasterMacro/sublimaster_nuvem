@@ -267,6 +267,19 @@ async function enviarPedido() {
         const adic = tr.querySelector('.inp-adic').value.trim();
 
         if (tamanho) {
+            // Lógica de Expansão de Sequência (X-Y)
+            if (numero.includes('-')) {
+                const parts = numero.split('-');
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && parts[0].trim() !== '' && parts[1].trim() !== '') {
+                    let start = parseInt(parts[0]);
+                    let end = parseInt(parts[1]);
+                    if (start > end) { const temp = start; start = end; end = temp; }
+                    for (let i = start; i <= end; i++) {
+                        itens.push({ Tamanho: tamanho, Quantidade: qtd, Nome: nome, Numero: i.toString(), Adicional: adic });
+                    }
+                    return; // Passa para a próxima linha
+                }
+            }
             itens.push({ Tamanho: tamanho, Quantidade: qtd, Nome: nome, Numero: numero, Adicional: adic });
         }
     });
