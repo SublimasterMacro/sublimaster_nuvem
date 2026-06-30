@@ -675,9 +675,9 @@ window.gerarLinkMagico = async function () {
     const dataEntregaRaw = document.getElementById('data-entrega').value;
     const msg = document.getElementById('save-msg');
 
-    if (!nome && !ref) {
+    if (!nome) {
         msg.style.color = "#ff5555";
-        msg.innerText = "Digite o nome do cliente ou a referência!";
+        msg.innerText = "Digite o nome do cliente para gerar o link!";
         setTimeout(() => msg.innerText = "", 4000);
         return;
     }
