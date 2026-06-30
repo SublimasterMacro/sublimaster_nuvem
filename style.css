@@ -677,11 +677,13 @@ td input, td select {
         font-size: 1.4rem;
     }
     .app-footer {
-        flex-direction: column !important;
-        justify-content: center !important;
-        text-align: center !important;
-        padding: 24px 16px !important;
-        gap: 20px !important;
+        padding: 16px !important;
+        justify-content: space-between !important;
+        flex-direction: row !important;
+    }
+
+    .footer-suporte {
+        display: none !important;
     }
 }
 
