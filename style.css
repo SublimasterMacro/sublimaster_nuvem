@@ -660,9 +660,7 @@ td input, td select {
         padding-bottom: 12px;
     }
 
-    .dash-kpi-row {
-        grid-template-columns: 1fr 1fr;
-    }
+
 
     .dash-kpi-card {
         padding: 16px;
@@ -679,7 +677,7 @@ td input, td select {
 
 .dash-kpi-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
 }
 
