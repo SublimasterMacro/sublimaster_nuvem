@@ -625,11 +625,34 @@ td input, td select {
     }
 
     .action-buttons {
-        flex-direction: column;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
 
     .action-buttons button {
         width: 100%;
+        font-size: 0.9rem; /* ajusta fonte pra caber */
+        padding: 12px 8px; /* reduz padding horizontal */
+    }
+
+    .action-footer {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px !important;
+    }
+
+    .action-footer > div {
+        min-width: 0 !important; /* remove min-width para caber no grid */
+        max-width: none !important;
+        width: 100%;
+    }
+    
+    #btn-salvar {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 8px;
+        font-size: 0.9rem;
     }
 
     /* Organizar o card de Histórico no Mobile */
