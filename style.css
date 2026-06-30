@@ -56,6 +56,10 @@ body {
     min-height: 100vh;
 }
 
+.dashboard-container {
+    flex: 1;
+}
+
 .flex-center {
     justify-content: center;
     align-items: center;
