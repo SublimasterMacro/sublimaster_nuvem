@@ -142,7 +142,7 @@
                 <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
-                        <input type="date" id="data-entrega" title="Data de Entrega" style="cursor: pointer;">
+                        <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text;" autocomplete="off">
                     </div>
                     <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2; flex-wrap: wrap;">
                         <p id="save-msg" class="msg-success mr-3"></p>
@@ -243,6 +243,6 @@
         </footer>
     </div>
 
-    <script src="app.js?v=49"></script>
+    <script src="app.js?v=50"></script>
 </body>
 </html>

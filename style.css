@@ -171,10 +171,6 @@ input, select {
     outline: none;
 }
 
-/* No input de data: oculta o ícone Phosphor da esquerda (mantém o nativo) */
-input[type="date"] {
-    padding-left: 16px;
-}
 
 input:focus, select:focus {
     outline: none;

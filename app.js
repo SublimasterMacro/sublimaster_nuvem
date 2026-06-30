@@ -113,8 +113,21 @@ async function showDashboard() {
     // Preenche as datas de entrega automaticamente (Daqui a 20 dias)
     const d = new Date();
     d.setDate(d.getDate() + 20);
-    const dataFormatada = d.toISOString().split('T')[0];
-    if (document.getElementById('data-entrega')) document.getElementById('data-entrega').value = dataFormatada;
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const dataFormatada = `${dd}/${mm}/${yyyy}`;
+    const elData = document.getElementById('data-entrega');
+    if (elData) {
+        elData.value = dataFormatada;
+        // Máscara automática DD/MM/AAAA
+        elData.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '').slice(0, 8);
+            if (v.length >= 5) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
+            else if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+            this.value = v;
+        });
+    }
 
     window.setupRealtimeSubscription();
     loadOrders();
@@ -243,11 +256,10 @@ async function enviarPedido() {
 
     if (!clienteName && !referencia) return alert("Digite o nome do cliente ou a referência do pedido!");
 
-    // Formata a data de entrega
+    // Formata a data de entrega (entrada: DD/MM/AAAA)
     let strEntrega = "";
-    if (dataEntregaRaw) {
-        const [y, m, d] = dataEntregaRaw.split('-');
-        strEntrega = ` - Entrega: ${d}/${m}/${y}`;
+    if (dataEntregaRaw && dataEntregaRaw.length === 10) {
+        strEntrega = ` - Entrega: ${dataEntregaRaw}`;
     }
 
     // Concatena com separador " | " para o banco de dados (que usa apenas uma coluna)
@@ -682,11 +694,10 @@ window.gerarLinkMagico = async function () {
         return;
     }
 
-    // Formata a data de entrega
+    // Formata a data de entrega (entrada: DD/MM/AAAA)
     let strEntrega = "";
-    if (dataEntregaRaw) {
-        const [y, m, d] = dataEntregaRaw.split('-');
-        strEntrega = ` - Entrega: ${d}/${m}/${y}`;
+    if (dataEntregaRaw && dataEntregaRaw.length === 10) {
+        strEntrega = ` - Entrega: ${dataEntregaRaw}`;
     }
 
     let clienteStr = "";
