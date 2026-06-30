@@ -57,7 +57,7 @@ body {
 }
 
 .dashboard-container {
-    flex: 1;
+    min-height: calc(100vh - 120px);
 }
 
 .flex-center {
@@ -723,7 +723,7 @@ td input, td select {
 /* FOOTER                                                                     */
 /* ========================================================================= */
 .app-footer {
-    margin-top: auto;
+    margin-top: 40px;
     padding: 20px 40px;
     border-top: 1px solid var(--border);
     display: flex;
