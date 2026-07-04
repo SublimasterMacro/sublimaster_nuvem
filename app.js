@@ -207,7 +207,7 @@ function verificarIntencaoDoUsuario() {
         // Modo PEDIDO — botão verde
         if (btnSalvar.dataset.modo !== 'pedido') {
             btnSalvar.dataset.modo = 'pedido';
-            btnSalvar.innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar para Confecção</span>';
+            btnSalvar.innerHTML = '<i class="ph ph-paper-plane-tilt"></i><span>Enviar Pedido</span>';
             btnSalvar.style.background = '';
             btnSalvar.style.boxShadow = '';
             btnSalvar.style.transition = 'all 0.3s ease';
