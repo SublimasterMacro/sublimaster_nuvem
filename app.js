@@ -339,7 +339,7 @@ async function enviarPedido() {
             msg.innerText = "Erro: " + error.message;
         } else {
             msg.style.color = "var(--accent)";
-            msg.innerText = "✅ Lista enviada com sucesso! Agradecemos a confiança.";
+            msg.innerText = "✅ Lista enviada com sucesso!";
             document.getElementById('cliente').value = "";
             document.getElementById('referencia').value = "";
             tbodyItens.innerHTML = "";
