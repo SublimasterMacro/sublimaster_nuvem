@@ -150,7 +150,7 @@
                         <!-- Input nativo invisível sobreposto ao ícone (funciona no iOS sem precisar de JS para abrir) -->
                         <input type="date" id="date-picker-hidden" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); opacity:0; width:32px; height:32px; cursor:pointer; margin:0; padding:0; border:none; z-index:10;" onchange="(function(){var v=document.getElementById('date-picker-hidden').value; if(v){var p=v.split('-'); document.getElementById('data-entrega').value=p[2]+'/'+p[1]+'/'+p[0];}})()">
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2;">
                         <p id="save-msg" class="msg-success mr-3"></p>
                         <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link" style="height:50px;">
                             <i class="ph ph-link"></i>
