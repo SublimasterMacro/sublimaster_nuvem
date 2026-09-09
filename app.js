@@ -132,7 +132,7 @@ async function showDashboard() {
     window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
-    if (tbodyItens.children.length === 0) { for(let i=0; i<10; i++) adicionarLinha(); }
+    if (tbodyItens.children.length === 0) { for(let i=0; i<20; i++) adicionarLinha(); }
 
     // Decide a aba inicial: Dashboard (se tem dados) ou Meus Pedidos (se vazio)
     const { count, error } = await db
@@ -158,8 +158,11 @@ function atualizarIndicesTabela() {
 // 3. TABELA DINÂMICA DE TAMANHOS
 function adicionarLinha(item = null) {
     const tr = document.createElement('tr');
+    // Cor intercalada baseada no número de linhas existentes
+    const isEven = tbodyItens.children.length % 2 === 0;
+    if (!isEven) tr.classList.add('row-odd');
     tr.innerHTML = `
-        <td class="row-index" style="text-align: center; color: var(--text-hint); font-size: 0.85rem; background: #f8fafc; pointer-events: none;"></td>
+        <td class="row-index" style="text-align: center; color: var(--text-hint); font-size: 0.85rem; pointer-events: none;"></td>
         <td><input type="text" class="inp-nome" placeholder="Opcional" value="${item && item.Nome ? item.Nome : ''}"></td>
         <td><input type="text" class="inp-numero" placeholder="Opcional" value="${item && item.Numero ? item.Numero : ''}"></td>
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro" value="${item && item.Adicional ? item.Adicional : ''}"></td>
@@ -169,6 +172,10 @@ function adicionarLinha(item = null) {
     `;
     tbodyItens.appendChild(tr);
     atualizarIndicesTabela();
+    // Re-aplicar cores intercaladas em toda tabela após reindex
+    Array.from(tbodyItens.children).forEach((row, idx) => {
+        row.classList.toggle('row-odd', idx % 2 !== 0);
+    });
     // Adiciona listeners de digitação nos inputs da nova linha para detectar intenção
     tr.querySelectorAll('input').forEach(inp => {
         inp.addEventListener('input', verificarIntencaoDoUsuario);
@@ -181,7 +188,7 @@ document.getElementById('btn-add-item').addEventListener('click', adicionarLinha
 document.getElementById('btn-clear-list').addEventListener('click', () => {
     if (confirm("Deseja realmente limpar todos os itens da tabela?")) {
         tbodyItens.innerHTML = "";
-        for(let i=0; i<10; i++) adicionarLinha();
+        for(let i=0; i<20; i++) adicionarLinha();
     }
 });
 
@@ -353,7 +360,7 @@ async function enviarPedido() {
             document.getElementById('cliente').value = "";
             document.getElementById('referencia').value = "";
             tbodyItens.innerHTML = "";
-            for(let i=0; i<10; i++) adicionarLinha();
+            for(let i=0; i<20; i++) adicionarLinha();
             loadOrders();
             suggestNextReference();
             verificarIntencaoDoUsuario();
@@ -367,7 +374,7 @@ function cancelEditMode() {
     document.getElementById('cliente').value = "";
     document.getElementById('referencia').value = "";
     tbodyItens.innerHTML = "";
-    for(let i=0; i<10; i++) adicionarLinha();
+    for(let i=0; i<20; i++) adicionarLinha();
 
     suggestNextReference();
     verificarIntencaoDoUsuario();
@@ -605,7 +612,7 @@ window.editOrder = function (id) {
         tbodyItens.appendChild(tr);
     });
 
-    if (tbodyItens.children.length === 0) { for(let i=0; i<10; i++) adicionarLinha(); }
+    if (tbodyItens.children.length === 0) { for(let i=0; i<20; i++) adicionarLinha(); }
 
     const btnSalvar = document.getElementById('btn-salvar');
     btnSalvar.innerHTML = '<i class="ph ph-pencil-simple"></i><span>Atualizar Pedido</span>';
@@ -742,7 +749,7 @@ window.gerarLinkMagico = async function () {
         document.getElementById('cliente').value = "";
         document.getElementById('referencia').value = "";
         tbodyItens.innerHTML = "";
-        for(let i=0; i<10; i++) adicionarLinha();
+        for(let i=0; i<20; i++) adicionarLinha();
         loadOrders();
         suggestNextReference();
         verificarIntencaoDoUsuario();
@@ -1096,23 +1103,11 @@ tbodyItens.addEventListener('change', function(e) {
 });
 
 // Lógica de Quick Import
-const btnQuickImport = document.getElementById('btn-quick-import');
-const pnlQuickImport = document.getElementById('quick-import-panel');
-const btnCancelImport = document.getElementById('btn-cancel-import');
+// Processar importação rápida — registra listener diretamente (sem depender de btn-quick-import)
 const btnProcessImport = document.getElementById('btn-process-import');
 const txtQuickImport = document.getElementById('quick-import-text');
 
-if (btnQuickImport) {
-    btnQuickImport.addEventListener('click', () => {
-        pnlQuickImport.classList.remove('hidden');
-        txtQuickImport.focus();
-    });
-    
-    btnCancelImport.addEventListener('click', () => {
-        pnlQuickImport.classList.add('hidden');
-        txtQuickImport.value = '';
-    });
-    
+if (btnProcessImport) {
     btnProcessImport.addEventListener('click', () => {
         const text = txtQuickImport.value.trim();
         if(!text) return;
@@ -1121,12 +1116,14 @@ if (btnQuickImport) {
         const validLines = lines.filter(l => l.trim().length > 0);
         if (validLines.length === 0) return;
         
-        // Limpar a primeira linha se estiver vazia
-        if (tbodyItens.children.length === 1) {
-            const firstRow = tbodyItens.children[0];
-            const hasData = Array.from(firstRow.querySelectorAll('input')).some(inp => inp.value.trim() !== '' && !inp.classList.contains('inp-qtd'));
-            if (!hasData) tbodyItens.innerHTML = '';
-        }
+        // Limpar linhas vazias antes de importar
+        const rows = Array.from(tbodyItens.querySelectorAll('tr'));
+        const allEmpty = rows.every(row => {
+            return Array.from(row.querySelectorAll('input')).every(inp =>
+                inp.classList.contains('inp-qtd') || inp.value.trim() === ''
+            );
+        });
+        if (allEmpty) tbodyItens.innerHTML = '';
         
         validLines.forEach(line => {
             let nome = '', numero = '', tam = '', adic = '';
@@ -1145,7 +1142,7 @@ if (btnQuickImport) {
             
             let qtd = 1;
             if (tam.includes('*') || tam.toUpperCase().includes('X')) {
-                const separator = tam.includes('*') ? '*' : (tam.toUpperCase().includes('X') ? 'X' : 'x');
+                const separator = tam.includes('*') ? '*' : 'X';
                 const tParts = tam.toUpperCase().split(separator);
                 if (tParts.length === 2 && !isNaN(tParts[0])) {
                     qtd = parseInt(tParts[0]);
@@ -1156,7 +1153,6 @@ if (btnQuickImport) {
             adicionarLinha({Nome: nome, Numero: numero, Tamanho: tam.toUpperCase(), Quantidade: qtd, Adicional: adic});
         });
         
-        pnlQuickImport.classList.add('hidden');
         txtQuickImport.value = '';
         verificarIntencaoDoUsuario();
     });
@@ -1216,7 +1212,7 @@ document.getElementById('file-open-csv')?.addEventListener('change', (e) => {
                 }
             }
             if(itensCount === 0) {
-                for(let i=0; i<10; i++) adicionarLinha();
+                for(let i=0; i<20; i++) adicionarLinha();
                 alert("Nenhum item válido encontrado no CSV. Use o formato com ponto e vírgula: Nome;Numero;Adicional;Tamanho;Quantidade");
             }
         } catch(err) {

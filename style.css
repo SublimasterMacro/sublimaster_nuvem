@@ -532,6 +532,21 @@ td {
     padding: 0;
     border: 1px solid var(--border);
     /* Spreadsheet grid lines */
+    background: #ffffff;
+}
+
+/* Linhas intercaladas — zebra striping */
+tbody tr {
+    background: #ffffff;
+    transition: background 0.1s ease;
+}
+
+tbody tr.row-odd {
+    background: #f1f5ff;
+}
+
+tbody tr:hover {
+    background: #e8f0fe !important;
 }
 
 td input,
