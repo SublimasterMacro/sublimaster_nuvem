@@ -669,16 +669,12 @@ window.switchTab = function (tabId) {
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        btn.style.borderBottomColor = 'transparent';
-        btn.style.color = 'var(--text-hint)';
     });
 
-    document.getElementById(tabId).style.display = 'block';
+    document.getElementById(tabId).style.display = 'flex'; // Mudado para 'flex' para não quebrar a hierarquia de flex: 1
     const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`);
     if (activeBtn) {
         activeBtn.classList.add('active');
-        activeBtn.style.borderBottomColor = 'var(--accent)';
-        activeBtn.style.color = 'var(--text-main)';
     }
 
     if (tabId === 'tab-dashboard') refreshDashboard();

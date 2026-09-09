@@ -339,33 +339,57 @@ button:active {
     color: var(--text-hint);
     font-weight: 500;
     cursor: pointer;
-    padding: 8px 16px;
-    border-bottom: 2px solid transparent;
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
     transition: all 0.2s ease;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    width: 100%;
+    margin-bottom: 4px;
 }
 
 .tab-btn:hover {
     color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn.active {
     color: var(--accent);
-    border-bottom-color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(41, 92, 232, 0.1);
 }
 
 /* Dashboard Container */
 .dashboard-container {
-    max-width: 1400px;
+    max-width: 1500px; /* leve aumento para acomodar sidebar lateral */
     margin: 0 auto;
-    padding: 24px;
+    padding: 20px 24px;
     width: 100%;
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Alterado para comportar a sidebar na esquerda */
+    gap: 24px;
     min-height: 0;
     overflow: hidden;
+}
+
+/* Sidebar de navegação esquerda */
+.app-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+}
+
+/* Wrapper do conteúdo das abas */
+.main-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
 }
 
 .tab-content {
@@ -381,7 +405,7 @@ button:active {
 /* O card principal É um flex-container de coluna:
    cabeçalho, campos, [tabela cresce aqui], botões, rodapé */
 .main-card {
-    padding: 32px;
+    padding: 24px;
     background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -395,7 +419,7 @@ button:active {
 
 .layout-sidebar-container {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: stretch;
     flex: 1;
     min-height: 0;
@@ -464,7 +488,7 @@ button:active {
     flex: 1;
     min-height: 200px; /* Garante altura mínima visível para a tabela */
     position: relative;
-    margin-top: 20px;
+    margin-top: 12px;
 }
 
 .table-responsive {

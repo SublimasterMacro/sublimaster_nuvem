@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=48">
+    <link rel="stylesheet" href="style.css?v=49">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -67,16 +67,19 @@
                         <span>Sair</span>
                     </button>
                 </div>
-                <!-- Admin Tabs -->
-                <div class="admin-tabs" style="display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                    <button class="tab-btn active" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Planilha de Pedido</button>
-                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise" style="margin-right: 8px;"></i>Histórico de Pedidos</button>
-                    <button class="tab-btn" onclick="switchTab('tab-dashboard')"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
-                </div>
+                <!-- Admin Tabs Movidas para a Sidebar -->
             </div>
         </header>
         
         <main class="dashboard-container">
+            <!-- Sidebar de Navegação -->
+            <aside class="app-sidebar">
+                <button class="tab-btn active" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart"></i> Planilha de Pedido</button>
+                <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Pedidos</button>
+                <button class="tab-btn" onclick="switchTab('tab-dashboard')"><i class="ph ph-chart-bar"></i> Dashboard</button>
+            </aside>
+            
+            <div class="main-content-wrapper">
             <!-- ABA 1: PEDIDOS INTERNOS E HISTÓRICO -->
             <div id="tab-pedidos" class="tab-content" style="display: none;">
             <!-- Novo Pedido -->
@@ -142,7 +145,7 @@
                 </div>
 
                 <!-- Botões FORA do wrapper de scroll - nunca serão cortados -->
-                <div class="action-buttons mt-3" style="flex-shrink: 0;">
+                <div class="action-buttons mt-2" style="flex-shrink: 0;">
                     <button id="btn-add-item" class="btn-secondary">
                         <i class="ph ph-list-plus"></i> Adicionar Linha
                     </button>
@@ -151,7 +154,7 @@
                     </button>
                 </div>
 
-                <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px; flex-shrink: 0;">
+                <div class="action-footer mt-3" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px; flex-shrink: 0;">
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
                         <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text; padding-left: 16px; padding-right: 44px;" autocomplete="off">
@@ -260,7 +263,7 @@
                 </div>
 
             </div> <!-- Fim tab-dashboard -->
-
+            </div> <!-- Fim main-content-wrapper -->
         </main>
 
         <!-- App Footer -->
@@ -284,6 +287,6 @@
         </footer>
     </div>
 
-    <script src="app.js?v=105"></script>
+    <script src="app.js?v=106"></script>
 </body>
 </html>
