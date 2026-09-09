@@ -462,7 +462,7 @@ button:active {
    Dentro dele, .table-responsive ocupa 100% da altura com scroll. */
 .table-scroll-wrapper {
     flex: 1;
-    min-height: 0;
+    min-height: 200px; /* Garante altura mínima visível para a tabela */
     position: relative;
     margin-top: 20px;
 }
