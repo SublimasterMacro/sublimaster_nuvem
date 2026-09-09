@@ -124,7 +124,7 @@ window.atualizarIndicesTabela = function atualizarIndicesTabela() {
     });
 }
 
-function adicionarLinha(item = null) {
+window.adicionarLinha = function(item = null) {
     const tbody = document.getElementById('tbody-itens');
     const tr = document.createElement('tr');
     tr.innerHTML = `

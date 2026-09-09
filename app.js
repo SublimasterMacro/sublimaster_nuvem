@@ -145,6 +145,8 @@ async function showDashboard() {
     } else {
         switchTab('tab-pedidos');
     }
+}
+
 function atualizarIndicesTabela() {
     const rows = tbodyItens.querySelectorAll('tr');
     rows.forEach((row, index) => {
