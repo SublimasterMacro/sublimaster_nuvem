@@ -132,7 +132,7 @@ async function showDashboard() {
     window.setupRealtimeSubscription();
     loadOrders();
     suggestNextReference();
-    if (tbodyItens.children.length === 0) adicionarLinha();
+    if (tbodyItens.children.length === 0) { for(let i=0; i<10; i++) adicionarLinha(); }
 
     // Decide a aba inicial: Dashboard (se tem dados) ou Meus Pedidos (se vazio)
     const { count, error } = await db
@@ -181,7 +181,7 @@ document.getElementById('btn-add-item').addEventListener('click', adicionarLinha
 document.getElementById('btn-clear-list').addEventListener('click', () => {
     if (confirm("Deseja realmente limpar todos os itens da tabela?")) {
         tbodyItens.innerHTML = "";
-        adicionarLinha();
+        for(let i=0; i<10; i++) adicionarLinha();
     }
 });
 
@@ -353,7 +353,7 @@ async function enviarPedido() {
             document.getElementById('cliente').value = "";
             document.getElementById('referencia').value = "";
             tbodyItens.innerHTML = "";
-            adicionarLinha();
+            for(let i=0; i<10; i++) adicionarLinha();
             loadOrders();
             suggestNextReference();
             verificarIntencaoDoUsuario();
@@ -367,7 +367,7 @@ function cancelEditMode() {
     document.getElementById('cliente').value = "";
     document.getElementById('referencia').value = "";
     tbodyItens.innerHTML = "";
-    adicionarLinha();
+    for(let i=0; i<10; i++) adicionarLinha();
 
     suggestNextReference();
     verificarIntencaoDoUsuario();
@@ -605,7 +605,7 @@ window.editOrder = function (id) {
         tbodyItens.appendChild(tr);
     });
 
-    if (tbodyItens.children.length === 0) adicionarLinha();
+    if (tbodyItens.children.length === 0) { for(let i=0; i<10; i++) adicionarLinha(); }
 
     const btnSalvar = document.getElementById('btn-salvar');
     btnSalvar.innerHTML = '<i class="ph ph-pencil-simple"></i><span>Atualizar Pedido</span>';
@@ -746,7 +746,7 @@ window.gerarLinkMagico = async function () {
         document.getElementById('cliente').value = "";
         document.getElementById('referencia').value = "";
         tbodyItens.innerHTML = "";
-        adicionarLinha();
+        for(let i=0; i<10; i++) adicionarLinha();
         loadOrders();
         suggestNextReference();
         verificarIntencaoDoUsuario();

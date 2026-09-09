@@ -66,7 +66,7 @@ async function initClientApp() {
         if (data.dados_pedido && data.dados_pedido.length > 0) {
             data.dados_pedido.forEach(item => adicionarLinha(item));
         } else {
-            adicionarLinha(); // Adiciona linha vazia para começar
+            for(let i=0; i<10; i++) adicionarLinha(); // Adiciona 10 linhas vazias para começar
         }
     } 
     // Caso contrário (Em produção, Finalizado, Baixado), é somente leitura!
