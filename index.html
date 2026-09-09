@@ -19,6 +19,10 @@
 
     <script>
         // Previne a piscada da tela de login
+        if (localStorage.getItem('sublimaster_codigo')) {
+            document.documentElement.classList.add('has-session');
+        }
+    </script>
     <!-- Nosso estilo principal e animacoes -->
     <style>
         /* As animações originais que dão o efeito "Sublimaster" foram movidas para style.css */
