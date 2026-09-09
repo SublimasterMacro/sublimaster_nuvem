@@ -1167,44 +1167,64 @@ if (btnQuickImport) {
 }
 
 // 12. NEW TOOLBAR BUTTONS LOGIC
-document.getElementById('btn-save-json')?.addEventListener('click', () => {
+document.getElementById('btn-save-csv')?.addEventListener('click', () => {
     const itens = capturarItensDaTabela();
     if(itens.length === 0) { alert('A tabela está vazia!'); return; }
-    const pedido = {
-        Cliente: document.getElementById('cliente').value,
-        Referencia: document.getElementById('referencia').value,
-        Itens: itens
-    };
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(pedido, null, 2));
+    
+    let csvContent = "Nome;Numero;Adicional;Tamanho;Quantidade\n";
+    itens.forEach(item => {
+        csvContent += `${item.Nome || ''};${item.Numero || ''};${item.Adicional || ''};${item.Tamanho || ''};${item.Quantidade || ''}\n`;
+    });
+    
+    const pedidoRef = document.getElementById('referencia').value || 'Sublimaster';
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute('href', dataStr);
-    dlAnchorElem.setAttribute('download', 'Pedido_' + (pedido.Referencia || 'Sublimaster') + '.json');
+    dlAnchorElem.setAttribute('href', url);
+    dlAnchorElem.setAttribute('download', `Pedido_${pedidoRef}.csv`);
     dlAnchorElem.click();
+    URL.revokeObjectURL(url);
 });
 
-document.getElementById('btn-open-json')?.addEventListener('click', () => {
-    document.getElementById('file-open-json').click();
+document.getElementById('btn-open-csv')?.addEventListener('click', () => {
+    document.getElementById('file-open-csv').click();
 });
 
-document.getElementById('file-open-json')?.addEventListener('change', (e) => {
+document.getElementById('file-open-csv')?.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const json = JSON.parse(e.target.result);
-            if (json.Cliente) document.getElementById('cliente').value = json.Cliente;
-            if (json.Referencia) document.getElementById('referencia').value = json.Referencia;
-            if (json.Itens && Array.isArray(json.Itens)) {
-                const tbody = document.getElementById('tbody-itens');
-                tbody.innerHTML = '';
-                json.Itens.forEach(item => adicionarLinha(item));
-                if(json.Itens.length === 0) {
-                    for(let i=0; i<10; i++) adicionarLinha();
+            const lines = e.target.result.split(/\r?\n/);
+            const tbody = document.getElementById('tbody-itens');
+            tbody.innerHTML = '';
+            let itensCount = 0;
+            
+            for(let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if(!line) continue;
+                if(i === 0 && line.toLowerCase().includes('tamanho')) continue; // header
+                
+                const parts = line.split(';');
+                if (parts.length >= 4) {
+                    const item = {
+                        Nome: parts[0] || '',
+                        Numero: parts[1] || '',
+                        Adicional: parts[2] || '',
+                        Tamanho: parts[3] || '',
+                        Quantidade: parts[4] || 1
+                    };
+                    adicionarLinha(item);
+                    itensCount++;
                 }
             }
+            if(itensCount === 0) {
+                for(let i=0; i<10; i++) adicionarLinha();
+                alert("Nenhum item válido encontrado no CSV. Use o formato com ponto e vírgula: Nome;Numero;Adicional;Tamanho;Quantidade");
+            }
         } catch(err) {
-            alert('Erro ao ler JSON: ' + err.message);
+            alert('Erro ao ler CSV: ' + err.message);
         }
     };
     reader.readAsText(file);
