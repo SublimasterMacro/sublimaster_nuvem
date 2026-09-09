@@ -59,40 +59,45 @@
                         <option value="BLG1"></option><option value="BLG2"></option><option value="BLG3"></option><option value="BLG4"></option><option value="BLG5"></option>
                     </datalist>
 
-                    <div class="table-responsive">
-                        <table id="tabela-itens">
-                            <thead>
-                                <tr>
-                                    <th style="width: 35%; min-width: 180px;">Nome</th>
-                                    <th style="width: 12%; min-width: 80px;">Número</th>
-                                    <th style="width: 25%; min-width: 140px;">Adicional</th>
-                                    <th style="width: 18%; min-width: 100px;">Tamanho</th>
-                                    <th style="width: 10%; min-width: 60px;">Qtd</th>
-                                    <th style="width: 40px; min-width: 40px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-itens">
-                                <!-- Itens para edição -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="action-buttons mt-3">
-                        <button id="btn-add-item" class="btn-secondary" onclick="adicionarLinha()">
-                            <i class="ph ph-list-plus"></i> Adicionar Linha
-                        </button>
-                        <button id="btn-quick-import" class="btn-outline">
-                            <i class="ph ph-lightning"></i> Importação Rápida
-                        </button>
-                    </div>
-                    
-                    <div id="quick-import-panel" class="hidden mt-3" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--accent);">
-                        <h4 style="margin-bottom: 10px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida (Colar Lista)</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 10px;">Cole sua lista bruta (WhatsApp/Excel). O sistema tentará extrair os dados de cada linha.</p>
-                        <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-main); font-family: monospace; resize: vertical;"></textarea>
-                        <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end;">
-                            <button id="btn-cancel-import" class="btn-outline" style="padding: 6px 12px; font-size: 0.9rem;">Cancelar</button>
-                            <button id="btn-process-import" class="btn-primary" style="padding: 6px 12px; font-size: 0.9rem;">Processar Linhas</button>
+                    <div class="table-and-import-container" style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 60%; width: 100%;">
+                            <div class="table-responsive">
+                                <table id="tabela-itens">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40px; text-align: center; color: var(--text-hint);">Nº</th>
+                                            <th style="width: 35%; min-width: 180px;">Nome</th>
+                                            <th style="width: 12%; min-width: 80px;">Número</th>
+                                            <th style="width: 25%; min-width: 140px;">Adicional</th>
+                                            <th style="width: 18%; min-width: 100px;">Tamanho</th>
+                                            <th style="width: 10%; min-width: 60px;">Qtd</th>
+                                            <th style="width: 40px; min-width: 40px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-itens">
+                                        <!-- Itens para edição -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="action-buttons mt-3">
+                                <button id="btn-add-item" class="btn-secondary" onclick="adicionarLinha()">
+                                    <i class="ph ph-list-plus"></i> Adicionar Linha
+                                </button>
+                                <button id="btn-quick-import" class="btn-outline">
+                                    <i class="ph ph-lightning"></i> Importação Rápida
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="quick-import-panel" class="hidden" style="width: 300px; background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); flex-shrink: 0;">
+                            <h4 style="margin-bottom: 10px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 10px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairá os dados automaticamente.</p>
+                            <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 150px; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: vertical;"></textarea>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; flex-direction: column;">
+                                <button id="btn-process-import" class="btn-primary" style="width: 100%; justify-content: center;">Processar Linhas</button>
+                                <button id="btn-cancel-import" class="btn-outline" style="width: 100%; justify-content: center;">Cancelar</button>
+                            </div>
                         </div>
                     </div>
 

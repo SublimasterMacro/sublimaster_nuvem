@@ -145,20 +145,28 @@ async function showDashboard() {
     } else {
         switchTab('tab-pedidos');
     }
+function atualizarIndicesTabela() {
+    const rows = tbodyItens.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        const cellIndex = row.querySelector('.row-index');
+        if (cellIndex) cellIndex.textContent = index + 1;
+    });
 }
 
 // 3. TABELA DINÂMICA DE TAMANHOS
 function adicionarLinha(item = null) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
+        <td class="row-index" style="text-align: center; color: var(--text-hint); font-size: 0.85rem; background: #f8fafc; pointer-events: none;"></td>
         <td><input type="text" class="inp-nome" placeholder="Opcional" value="${item && item.Nome ? item.Nome : ''}"></td>
         <td><input type="text" class="inp-numero" placeholder="Opcional" value="${item && item.Numero ? item.Numero : ''}"></td>
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro" value="${item && item.Adicional ? item.Adicional : ''}"></td>
         <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="P, M, G..." value="${item && item.Tamanho ? item.Tamanho : ''}" style="text-transform:uppercase;"></td>
         <td><input type="number" class="inp-qtd" value="${item && item.Quantidade ? item.Quantidade : 1}" min="1" style="width:70px;"></td>
-        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove(); verificarIntencaoDoUsuario();" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
+        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove(); atualizarIndicesTabela(); verificarIntencaoDoUsuario();" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
     `;
     tbodyItens.appendChild(tr);
+    atualizarIndicesTabela();
     // Adiciona listeners de digitação nos inputs da nova linha para detectar intenção
     tr.querySelectorAll('input').forEach(inp => {
         inp.addEventListener('input', verificarIntencaoDoUsuario);

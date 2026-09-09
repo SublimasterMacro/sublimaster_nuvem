@@ -115,19 +115,30 @@ function renderStatus(status) {
     container.innerHTML = `<span style="display:inline-flex; align-items:center; gap:6px; font-weight:600; color:${color}; font-size: 0.95rem; padding: 4px 10px; background: rgba(255,255,255,0.05); border-radius: 6px;"><i class="ph ${icon}"></i> Status: ${status}</span>`;
 }
 
-window.adicionarLinha = function(item = null) {
-    const tbodyItens = document.getElementById('tbody-itens');
+window.atualizarIndicesTabela = function atualizarIndicesTabela() {
+    const tbody = document.getElementById('tbody-itens');
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        const cellIndex = row.querySelector('.row-index');
+        if (cellIndex) cellIndex.textContent = index + 1;
+    });
+}
+
+function adicionarLinha(item = null) {
+    const tbody = document.getElementById('tbody-itens');
     const tr = document.createElement('tr');
     tr.innerHTML = `
-        <td><input type="text" class="inp-nome" placeholder="Nome (Opcional)" value="${item && item.Nome ? item.Nome : ''}"></td>
-        <td><input type="text" class="inp-numero" placeholder="Num." value="${item && item.Numero ? item.Numero : ''}"></td>
+        <td class="row-index" style="text-align: center; color: var(--text-hint); font-size: 0.85rem; background: #f8fafc; pointer-events: none;"></td>
+        <td><input type="text" class="inp-nome" placeholder="Opcional" value="${item && item.Nome ? item.Nome : ''}"></td>
+        <td><input type="text" class="inp-numero" placeholder="Opcional" value="${item && item.Numero ? item.Numero : ''}"></td>
         <td><input type="text" class="inp-adic" placeholder="Ex: Goleiro" value="${item && item.Adicional ? item.Adicional : ''}"></td>
-        <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="Ex: M" value="${item && item.Tamanho ? item.Tamanho : ''}" style="text-transform:uppercase;"></td>
+        <td><input type="text" list="tamanhos-list" class="inp-tamanho" placeholder="P, M, G..." value="${item && item.Tamanho ? item.Tamanho : ''}" style="text-transform:uppercase;"></td>
         <td><input type="number" class="inp-qtd" value="${item && item.Quantidade ? item.Quantidade : 1}" min="1" style="width:70px;"></td>
-        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove()" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
+        <td style="text-align:center;"><button class="btn-icon-only" onclick="this.closest('tr').remove(); atualizarIndicesTabela();" title="Remover Linha"><i class="ph ph-x" style="font-weight: bold; font-size: 16px;"></i></button></td>
     `;
-    tbodyItens.appendChild(tr);
-    
+    tbody.appendChild(tr);
+    atualizarIndicesTabela();
+
     // Auto-scroll no mobile
     if (window.innerWidth <= 768) {
         tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
