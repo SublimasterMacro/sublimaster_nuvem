@@ -19,37 +19,48 @@
 
     <script>
         // Previne a piscada da tela de login
-        if (localStorage.getItem('sublimaster_codigo')) {
-            document.documentElement.classList.add('has-session');
-        }
-    </script>
+    <!-- Nosso estilo principal e animacoes -->
     <style>
-        html.has-session #login-screen { display: none !important; }
-        html.has-session #dashboard-screen { display: flex !important; opacity: 0.5; pointer-events: none; }
+        /* As animações originais que dão o efeito "Sublimaster" foram movidas para style.css */
+        
+        /* Ajuste fino para a listagem na importação rápida para não quebrar layout */
+        textarea::placeholder {
+            color: #94a3b8;
+            opacity: 1;
+        }
     </style>
 </head>
-<body>
+<body class="dark-theme">
+    
+    <!-- Background Animated (O mesmo do desktop para familiaridade) -->
     <div class="bg-animated"></div>
+    <div class="glass-overlay"></div>
 
-    <!-- Tela de Login -->
-    <div id="login-screen" class="screen flex-center">
-        <div class="glass-panel login-box">
-            <div class="logo-container">
-                <i class="ph ph-cloud-arrow-up text-accent" style="font-size: 48px; margin-bottom: 10px;"></i>
-                <h1 class="gradient-text">Sublimaster Nuvem</h1>
-                <p class="subtitle">Portal Exclusivo do Cliente</p>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="login-card slide-up">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <i class="ph-fill ph-cloud-check text-accent" style="font-size: 48px;"></i>
+                <h2 class="gradient-text" style="font-size: 24px; margin-top: 8px;">Sublimaster Nuvem</h2>
+                <p style="color: var(--text-hint); font-size: 0.9rem; margin-top: 4px;">Acesso ao Portal de Digitação</p>
             </div>
             
+            <div id="login-error" class="msg-error" style="display: none; margin-bottom: 16px;">
+                Código de acesso inválido.
+            </div>
+
             <div class="input-group">
-                <i class="ph ph-key icon-input"></i>
-                <input type="text" id="codigo-acesso" placeholder="Código da Confecção" autocomplete="off">
+                <i class="ph ph-lock icon-input"></i>
+                <input type="password" id="input-codigo" placeholder="Digite o código de acesso" autofocus>
             </div>
             
-            <button id="btn-login" class="btn-primary btn-lg mt-4">
-                <span>Acessar Painel</span>
-                <i class="ph-bold ph-arrow-right"></i>
+            <button id="btn-login" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
+                <span>Acessar</span>
+                <i class="ph ph-arrow-right"></i>
             </button>
-            <p id="login-msg" class="msg-error mt-3"></p>
+            <p style="text-align: center; font-size: 0.75rem; color: var(--text-hint); margin-top: 24px; opacity: 0.7;">
+                Módulo Nuvem Integrado v1.0
+            </p>
         </div>
     </div>
 
@@ -170,7 +181,7 @@
                         </button>
                     </div>
                 </div>
-                </div> <!-- Fim Main Content / Card -->
+                </div> <!-- Fim card form -->
 
                 <div class="layout-sidebar">
                     <div id="quick-import-panel" style="display: flex; flex-direction: column; height: 100%; background: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
@@ -189,64 +200,72 @@
                     </div>
                 </div> <!-- Fim Sidebar -->
             </div> <!-- Fim container split -->
-            
-            <!-- Hidden File Input for CSV -->
-            <input type="file" id="file-open-csv" accept=".csv" style="display: none;">
-            
             </div> <!-- Fim tab-pedidos -->
-
-            <!-- ABA 2: HISTÓRICO DE PEDIDOS -->
+            
+            <!-- ABA 2: HISTÓRICO -->
             <div id="tab-historico" class="tab-content" style="display: none;">
-                <div class="history-card slide-up">
-                    <div class="card-header border-bottom mb-3">
-                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos Salvos</h3>
+                <div class="history-card slide-up" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                    <div class="card-header" style="justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos e Links</h3>
+                        
+                        <!-- Barra de Pesquisa Simplificada -->
+                        <div class="input-group" style="margin: 0; min-width: 250px;">
+                            <i class="ph ph-magnifying-glass icon-input"></i>
+                            <input type="text" id="search-history" placeholder="Buscar cliente ou ref...">
+                        </div>
                     </div>
-                    <ul id="lista-pedidos" class="order-list">
-                        <!-- Histórico via JS -->
-                    </ul>
+
+                    <!-- Layout em Grid (Cards) para Mobile e Desktop -->
+                    <div id="historico-grid" style="flex: 1; overflow-y: auto; padding-right: 5px; min-height: 200px;">
+                        <p style="color: var(--text-hint);">Carregando...</p>
+                    </div>
                 </div>
             </div> <!-- Fim tab-historico -->
 
             <!-- ABA 3: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content" style="display: none;">
-                <!-- KPI Cards -->
+                
+                <!-- Cards de KPI -->
                 <div class="dash-kpi-row slide-up">
-                    <div class="glass-panel dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(251,169,76,0.15); color: #FBA94C;"><i class="ph-fill ph-clock"></i></div>
-                        <div class="dash-kpi-body">
-                            <span class="dash-kpi-value" id="kpi-pendentes">0</span>
-                            <span class="dash-kpi-label">Pendentes</span>
+                    <div class="dash-kpi-card">
+                        <div class="dash-kpi-icon"><i class="ph ph-shopping-bag"></i></div>
+                        <div>
+                            <div class="dash-kpi-label">Total de Pedidos</div>
+                            <div class="dash-kpi-value" id="kpi-total-pedidos">0</div>
                         </div>
                     </div>
-                    <div class="glass-panel dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(77,166,255,0.15); color: #4da6ff;"><i class="ph-fill ph-gear"></i></div>
-                        <div class="dash-kpi-body">
-                            <span class="dash-kpi-value" id="kpi-producao">0</span>
-                            <span class="dash-kpi-label">Em Produção</span>
+                    <div class="dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><i class="ph ph-check-circle"></i></div>
+                        <div>
+                            <div class="dash-kpi-label">Concluídos</div>
+                            <div class="dash-kpi-value" id="kpi-concluidos">0</div>
                         </div>
                     </div>
-                    <div class="glass-panel dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(0,179,126,0.15); color: #00B37E;"><i class="ph-fill ph-check-circle"></i></div>
-                        <div class="dash-kpi-body">
-                            <span class="dash-kpi-value" id="kpi-concluidos">0</span>
-                            <span class="dash-kpi-label">Concluídos</span>
+                    <div class="dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(234, 179, 8, 0.1); color: #eab308;"><i class="ph ph-clock"></i></div>
+                        <div>
+                            <div class="dash-kpi-label">Em Produção</div>
+                            <div class="dash-kpi-value" id="kpi-producao">0</div>
                         </div>
                     </div>
-                    <div class="glass-panel dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(179,102,255,0.15); color: #b366ff;"><i class="ph-fill ph-t-shirt"></i></div>
-                        <div class="dash-kpi-body">
-                            <span class="dash-kpi-value" id="kpi-pecas-total">0</span>
-                            <span class="dash-kpi-label">Peças no Mês</span>
+                    <div class="dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;"><i class="ph ph-t-shirt"></i></div>
+                        <div>
+                            <div class="dash-kpi-label">Total de Peças</div>
+                            <div class="dash-kpi-value" id="kpi-total-pecas">0</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Alertas de Prazo -->
-                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;" id="dash-alertas-card">
-                    <div class="card-header border-bottom mb-3">
-                        <h3><i class="ph ph-warning-circle" style="color: var(--error);"></i> Prazos Próximos</h3>
+                <!-- Histórico Recente no Dashboard -->
+                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;">
+                    <div class="card-header border-bottom mb-3" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Pedidos Recentes</h3>
+                        <button class="btn-outline" onclick="switchTab('tab-historico')" style="padding: 6px 12px; font-size: 0.8rem;">
+                            Ver Todos <i class="ph ph-arrow-right"></i>
+                        </button>
                     </div>
-                    <div id="dash-alertas" style="font-size: 0.95rem;">
+                    <div id="dash-recent-list" style="display: flex; flex-direction: column; gap: 10px;">
                         <p style="color: var(--text-hint);">Carregando...</p>
                     </div>
                 </div>
@@ -265,24 +284,27 @@
         <!-- App Footer -->
         <footer class="app-footer">
             <!-- Esquerda: Status -->
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="display: inline-block; width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent-glow); animation: pulse 2s infinite;"></span>
-                <span style="font-weight: 500; letter-spacing: 0.5px;">Sistema Online</span>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="status-indicator">
+                    <span id="sync-dot" class="status-dot offline"></span>
+                    <span id="sync-text">Desconectado</span>
+                </div>
             </div>
-            
+
             <!-- Centro: Copyright -->
-            <div style="font-weight: 400; opacity: 0.7;">
+            <div style="opacity: 0.5;">
                 &copy; 2026 Sublimaster
             </div>
-            
-            <!-- Direita: Suporte (esconde no mobile) -->
-            <div class="footer-suporte" style="display: flex; align-items: center; gap: 6px; opacity: 0.6; cursor: not-allowed;" title="Suporte em breve">
-                <i class="ph ph-headset" style="font-size: 1.1rem;"></i>
-                <span>Suporte</span>
+
+            <!-- Direita: Ajuda/Licença -->
+            <div class="footer-suporte" style="display: flex; gap: 16px;">
+                <a href="#" style="color: var(--text-hint); text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                    <i class="ph ph-headset"></i> Suporte
+                </a>
             </div>
         </footer>
     </div>
 
-    <script src="app.js?v=107"></script>
+    <script src="app.js?v=108"></script>
 </body>
 </html>

@@ -575,6 +575,9 @@ window.editOrder = function (id) {
     const pedido = window.loadedOrders.find(p => p.id === id);
     if (!pedido) return;
 
+    // Muda para a aba da planilha automaticamente
+    switchTab('tab-pedidos');
+
     editingOrderId = id;
 
     let ref = "";
