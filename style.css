@@ -267,6 +267,25 @@ button:active {
     color: var(--accent);
 }
 
+/* Custom Colored Buttons */
+.btn-blue {
+    background: #0ea5e9;
+    color: #FFF;
+}
+.btn-blue:hover { background: #0284c7; }
+
+.btn-dark {
+    background: #1e293b;
+    color: #FFF;
+}
+.btn-dark:hover { background: #0f172a; }
+
+.btn-purple {
+    background: #6366f1;
+    color: #FFF;
+}
+.btn-purple:hover { background: #4f46e5; }
+
 .btn-lg {
     width: 100%;
     padding: 16px;
@@ -334,24 +353,43 @@ button:active {
 
 /* Dashboard Container */
 .dashboard-container {
-    max-width: 1000px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 32px 24px;
     width: 100%;
-
     display: flex;
     flex-direction: column;
-    /* Removida a trava de altura para permitir rolagem nativa da pagina inteira */
 }
 
 .main-card {
     padding: 32px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.layout-sidebar-container {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.layout-main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.layout-sidebar {
+    width: 300px;
     flex-shrink: 0;
 }
 
 .history-card {
-    flex: 1;
-    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
     margin-bottom: 20px;
 }
 
@@ -384,6 +422,8 @@ button:active {
 /* Table Design */
 .table-responsive {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 60vh;
     border-radius: 8px;
     border: 1px solid var(--border);
     background: #ffffff;
@@ -391,16 +431,16 @@ button:active {
 
 /* Estilizar a barra de rolagem da tabela */
 .table-responsive::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f8fafc;
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
+    background: #cbd5e1;
     border-radius: 4px;
 }
 
@@ -419,6 +459,10 @@ th {
     letter-spacing: 0.05em;
     background: #f8fafc;
     border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 0 var(--border);
 }
 
 .opcional {

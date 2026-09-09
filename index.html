@@ -69,7 +69,8 @@
                 </div>
                 <!-- Admin Tabs -->
                 <div class="admin-tabs" style="display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                    <button class="tab-btn" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Meus Pedidos</button>
+                    <button class="tab-btn active" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart" style="margin-right: 8px;"></i>Planilha de Pedido</button>
+                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise" style="margin-right: 8px;"></i>Histórico de Pedidos</button>
                     <button class="tab-btn" onclick="switchTab('tab-dashboard')"><i class="ph ph-chart-bar" style="margin-right: 8px;"></i>Dashboard</button>
                 </div>
             </div>
@@ -79,10 +80,16 @@
             <!-- ABA 1: PEDIDOS INTERNOS E HISTÓRICO -->
             <div id="tab-pedidos" class="tab-content" style="display: none;">
             <!-- Novo Pedido -->
-            <div class="glass-panel main-card slide-up">
-                <div class="card-header">
-                    <h3><i class="ph ph-plus-circle text-accent"></i> Criar Novo Pedido</h3>
-                </div>
+            <div class="layout-sidebar-container slide-up">
+                <div class="layout-main-content main-card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <h3><i class="ph ph-table text-accent"></i> Planilha de Digitação</h3>
+                        <div class="action-buttons" style="margin-top: 0;">
+                            <button id="btn-save-json" class="btn-blue"><i class="ph ph-floppy-disk"></i> Salvar JSON</button>
+                            <button id="btn-open-json" class="btn-dark"><i class="ph ph-folder-open"></i> Abrir</button>
+                            <button id="btn-print-pdf" class="btn-purple"><i class="ph ph-printer"></i> Imprimir PDF</button>
+                        </div>
+                    </div>
                 
                 <div class="flex-row">
                     <div class="input-group" style="flex: 1; margin: 0;">
@@ -112,48 +119,33 @@
                     <option value="BLG1"></option><option value="BLG2"></option><option value="BLG3"></option><option value="BLG4"></option><option value="BLG5"></option>
                 </datalist>
 
-                <div class="table-and-import-container" style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 60%; width: 100%;">
-                        <div class="table-responsive">
-                            <table id="tabela-itens">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40px; text-align: center; color: var(--text-hint);">Nº</th>
-                                        <th style="width: 35%; min-width: 180px;">Nome</th>
-                                        <th style="width: 12%; min-width: 80px;">Número</th>
-                                        <th style="width: 25%; min-width: 140px;">Adicional</th>
-                                        <th style="width: 18%; min-width: 100px;">Tamanho</th>
-                                        <th style="width: 10%; min-width: 60px;">Qtd</th>
-                                        <th style="width: 40px; min-width: 40px;"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-itens">
-                                    <!-- Itens vão brotar aqui -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="action-buttons mt-3">
-                            <button id="btn-add-item" class="btn-secondary">
-                                <i class="ph ph-list-plus"></i> Adicionar Linha
-                            </button>
-                            <button id="btn-quick-import" class="btn-outline">
-                                <i class="ph ph-lightning"></i> Importação Rápida
-                            </button>
-                            <button id="btn-clear-list" class="btn-outline">
-                                <i class="ph ph-trash"></i> Limpar Lista
-                            </button>
-                        </div>
+                <div style="margin-top: 20px;">
+                    <div class="table-responsive">
+                        <table id="tabela-itens">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center; color: var(--text-hint);">Nº</th>
+                                    <th style="width: 35%; min-width: 180px;">Nome</th>
+                                    <th style="width: 12%; min-width: 80px;">Número</th>
+                                    <th style="width: 25%; min-width: 140px;">Adicional</th>
+                                    <th style="width: 18%; min-width: 100px;">Tamanho</th>
+                                    <th style="width: 10%; min-width: 60px;">Qtd</th>
+                                    <th style="width: 40px; min-width: 40px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-itens">
+                                <!-- Itens vão brotar aqui -->
+                            </tbody>
+                        </table>
                     </div>
                     
-                    <div id="quick-import-panel" class="hidden" style="width: 300px; background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); flex-shrink: 0;">
-                        <h4 style="margin-bottom: 10px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 10px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairá os dados automaticamente.</p>
-                        <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 150px; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: vertical;"></textarea>
-                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-direction: column;">
-                            <button id="btn-process-import" class="btn-primary" style="width: 100%; justify-content: center;">Processar Linhas</button>
-                            <button id="btn-cancel-import" class="btn-outline" style="width: 100%; justify-content: center;">Cancelar</button>
-                        </div>
+                    <div class="action-buttons mt-3">
+                        <button id="btn-add-item" class="btn-secondary">
+                            <i class="ph ph-list-plus"></i> Adicionar Linha
+                        </button>
+                        <button id="btn-clear-list" class="btn-outline">
+                            <i class="ph ph-trash"></i> Limpar Lista
+                        </button>
                     </div>
                 </div>
 
@@ -176,19 +168,32 @@
                         </button>
                     </div>
                 </div>
-            </div>
-            
+                </div> <!-- Fim Main Content / Card -->
 
-            <!-- Histórico -->
-            <div class="glass-panel main-card history-card mt-4 slide-up" style="animation-delay: 0.2s;">
-                <div class="card-header border-bottom mb-3">
-                    <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos</h3>
-                </div>
-                <ul id="lista-pedidos" class="order-list">
-                    <!-- Histórico via JS -->
-                </ul>
-            </div>
+                <div class="layout-sidebar">
+                    <div id="quick-import-panel" style="background: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+                        <h4 style="margin-bottom: 12px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 16px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairá os dados automaticamente.</p>
+                        <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 250px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: vertical;"></textarea>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-direction: column;">
+                            <button id="btn-process-import" class="btn-primary" style="width: 100%; justify-content: center;"><i class="ph ph-check"></i> Processar Lista</button>
+                        </div>
+                    </div>
+                </div> <!-- Fim Sidebar -->
+            </div> <!-- Fim container split -->
             </div> <!-- Fim tab-pedidos -->
+
+            <!-- ABA 2: HISTÓRICO DE PEDIDOS -->
+            <div id="tab-historico" class="tab-content" style="display: none;">
+                <div class="history-card slide-up">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos Salvos</h3>
+                    </div>
+                    <ul id="lista-pedidos" class="order-list">
+                        <!-- Histórico via JS -->
+                    </ul>
+                </div>
+            </div> <!-- Fim tab-historico -->
 
             <!-- ABA 3: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content" style="display: none;">

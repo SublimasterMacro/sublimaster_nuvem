@@ -665,6 +665,7 @@ window.confirmStatusChange = async function (id, newStatus) {
 window.switchTab = function (tabId) {
     document.getElementById('tab-pedidos').style.display = 'none';
     document.getElementById('tab-dashboard').style.display = 'none';
+    document.getElementById('tab-historico').style.display = 'none';
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
