@@ -365,6 +365,7 @@ button:active {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
 }
 
 .tab-content {
@@ -373,6 +374,7 @@ button:active {
     flex-direction: column;
     min-height: 0;
     width: 100%;
+    overflow: hidden;
     animation: fadeIn 0.4s ease forwards;
 }
 
@@ -666,7 +668,15 @@ td select:focus {
     margin-bottom: 20px;
 }
 
-/* Responsive adjustments */
+/* ESTE BLOCO GARANTE QUE O LAYOUT SEJA STRICTLY 100VH E NÃO TRANSBORDE O RODAPÉ */
+.screen, .dashboard-container, .tab-content, .layout-sidebar-container {
+    overflow: hidden;
+}
+.layout-main-content, .layout-sidebar {
+    overflow-y: auto;
+}
+
+/* Responsividade Mobile */
 @media (max-width: 992px) {
     body {
         height: auto;
