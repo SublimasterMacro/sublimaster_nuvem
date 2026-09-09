@@ -378,6 +378,8 @@ button:active {
     animation: fadeIn 0.4s ease forwards;
 }
 
+/* O card principal É um flex-container de coluna:
+   cabeçalho, campos, [tabela cresce aqui], botões, rodapé */
 .main-card {
     padding: 32px;
     background: #ffffff;
@@ -387,6 +389,8 @@ button:active {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    /* SEM overflow:hidden — os botões action-buttons e action-footer
+       estão FORA do scroll-wrapper e NÃO devem ser cortados */
 }
 
 .layout-sidebar-container {
@@ -395,26 +399,26 @@ button:active {
     align-items: stretch;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
+/* Layout-main-content = wrapper do .main-card;
+   NÃO coloque overflow:hidden aqui — o .main-card já faz isso */
 .layout-main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     max-width: calc(100% - 374px);
     min-width: 0;
-    min-height: 0; /* IMPEDE QUE O CONTEÚDO ESTOURE A ALTURA */
-    height: 100%; /* FORÇA A CABER NO CONTAINER */
-    overflow: hidden; /* O SCROLL AGORA FICA NA TABELA */
+    min-height: 0;
     border-radius: 12px;
 }
 
 .layout-sidebar {
     width: 350px;
     flex-shrink: 0;
-    min-height: 0; /* IMPEDE ESTOURO */
-    height: 100%; /* FORÇA A CABER */
-    overflow-y: auto; /* Previne que o card vaze por cima do rodapé */
+    min-height: 0;
+    overflow-y: auto;
     border-radius: 12px;
 }
 
@@ -454,13 +458,23 @@ button:active {
 }
 
 /* Table Design */
+/* O wrapper flex:1 cresce para preencher o espaço disponível no card.
+   Dentro dele, .table-responsive ocupa 100% da altura com scroll. */
+.table-scroll-wrapper {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    margin-top: 20px;
+}
+
 .table-responsive {
     border-radius: 8px;
     border: 1px solid var(--border);
     background: #ffffff;
-    flex: 1;
-    min-height: 0;
+    position: absolute;
+    inset: 0;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 /* Estilizar a barra de rolagem da tabela */
@@ -679,16 +693,7 @@ td select:focus {
     flex-shrink: 0;
 }
 
-/* ESTE BLOCO GARANTE QUE O LAYOUT SEJA STRICTLY 100VH E NÃO TRANSBORDE O RODAPÉ */
-.screen, .dashboard-container, .tab-content, .layout-sidebar-container {
-    overflow: hidden;
-}
-.layout-main-content {
-    overflow: hidden;
-}
-.layout-sidebar {
-    overflow-y: auto;
-}
+/* Overflow containment — apenas onde necessário */
 
 /* Responsividade Mobile */
 @media (max-width: 992px) {
