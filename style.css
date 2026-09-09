@@ -27,12 +27,17 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     font-family: var(--font-body);
-    height: 100vh;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     -webkit-font-smoothing: antialiased;
@@ -393,6 +398,8 @@ button:active {
     flex-direction: column;
     max-width: calc(100% - 374px);
     min-width: 0;
+    min-height: 0; /* IMPEDE QUE O CONTEÚDO ESTOURE A ALTURA */
+    height: 100%; /* FORÇA A CABER NO CONTAINER */
     overflow-y: auto; /* Permite rolar até o cabeçalho da tabela */
     border-radius: 12px;
 }
@@ -400,6 +407,8 @@ button:active {
 .layout-sidebar {
     width: 350px;
     flex-shrink: 0;
+    min-height: 0; /* IMPEDE ESTOURO */
+    height: 100%; /* FORÇA A CABER */
     overflow-y: auto; /* Previne que o card vaze por cima do rodapé */
     border-radius: 12px;
 }
