@@ -439,21 +439,25 @@ th {
 }
 
 td {
-    padding: 2px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-tr:last-child td {
-    border-bottom: none;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08); /* Spreadsheet grid lines */
 }
 
 td input, td select {
     margin-bottom: 0;
-    padding: 4px 8px;
-    font-size: 0.85rem;
-    height: 32px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    font-size: 0.9rem;
+    height: 38px;
+    border-radius: 0; /* Square edges */
+    border: none !important; /* Remove inner border */
+    background: transparent;
+    width: 100%;
+}
+
+td input:focus, td select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .action-buttons {

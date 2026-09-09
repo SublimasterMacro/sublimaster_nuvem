@@ -218,3 +218,164 @@ function renderReadonlyTable(itens) {
         tbody.appendChild(tr);
     });
 }
+
+// =====================================================================
+// 8. SPREADSHEET UI & QUICK IMPORT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const tbodyItens = document.getElementById('tbody-itens');
+
+    // Navegação por teclado estilo planilha
+    tbodyItens.addEventListener('keydown', function(e) {
+        if (e.target.tagName !== 'INPUT') return;
+        
+        const input = e.target;
+        const td = input.closest('td');
+        const tr = td.closest('tr');
+        
+        const colIndex = Array.from(tr.children).indexOf(td);
+        const rows = Array.from(tbodyItens.children);
+        const rowIndex = rows.indexOf(tr);
+
+        // Enter para descer ou criar linha
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            
+            // Auto Fill (10*M) antes de descer
+            if (input.classList.contains('inp-tamanho')) {
+                let val = input.value.toUpperCase();
+                if (val.includes('*') || val.includes('X')) {
+                    const separator = val.includes('*') ? '*' : 'X';
+                    const parts = val.split(separator);
+                    if (parts.length === 2 && !isNaN(parts[0])) {
+                        const qtdInput = tr.querySelector('.inp-qtd');
+                        qtdInput.value = parseInt(parts[0]);
+                        input.value = parts[1].trim();
+                    }
+                }
+            }
+
+            if (rowIndex === rows.length - 1) {
+                window.adicionarLinha();
+                const newRows = Array.from(tbodyItens.children);
+                const nextInput = newRows[newRows.length - 1].children[colIndex].querySelector('input');
+                if (nextInput) nextInput.focus();
+            } else {
+                const nextInput = rows[rowIndex + 1].children[colIndex].querySelector('input');
+                if (nextInput) nextInput.focus();
+            }
+        }
+        
+        // Setas para navegar
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (rowIndex < rows.length - 1) {
+                const nextInput = rows[rowIndex + 1].children[colIndex].querySelector('input');
+                if (nextInput) nextInput.focus();
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (rowIndex > 0) {
+                const prevInput = rows[rowIndex - 1].children[colIndex].querySelector('input');
+                if (prevInput) prevInput.focus();
+            }
+        } else if (e.key === 'ArrowRight' && input.selectionStart === input.value.length) {
+            if (colIndex < tr.children.length - 2) {
+                e.preventDefault();
+                const nextInput = tr.children[colIndex + 1].querySelector('input');
+                if (nextInput) nextInput.focus();
+            }
+        } else if (e.key === 'ArrowLeft' && input.selectionEnd === 0) {
+            if (colIndex > 0) {
+                e.preventDefault();
+                const prevInput = tr.children[colIndex - 1].querySelector('input');
+                if (prevInput) prevInput.focus();
+            }
+        }
+    });
+
+    // Auto Fill no Blur
+    tbodyItens.addEventListener('change', function(e) {
+        if (e.target.classList.contains('inp-tamanho')) {
+            const input = e.target;
+            let val = input.value.toUpperCase();
+            if (val.includes('*') || val.includes('X')) {
+                const separator = val.includes('*') ? '*' : 'X';
+                const parts = val.split(separator);
+                if (parts.length === 2 && !isNaN(parts[0])) {
+                    const td = input.closest('td');
+                    const tr = td.closest('tr');
+                    const qtdInput = tr.querySelector('.inp-qtd');
+                    qtdInput.value = parseInt(parts[0]);
+                    input.value = parts[1].trim();
+                }
+            }
+        }
+    });
+
+    // Lógica de Quick Import
+    const btnQuickImport = document.getElementById('btn-quick-import');
+    const pnlQuickImport = document.getElementById('quick-import-panel');
+    const btnCancelImport = document.getElementById('btn-cancel-import');
+    const btnProcessImport = document.getElementById('btn-process-import');
+    const txtQuickImport = document.getElementById('quick-import-text');
+
+    if (btnQuickImport) {
+        btnQuickImport.addEventListener('click', () => {
+            pnlQuickImport.classList.remove('hidden');
+            txtQuickImport.focus();
+        });
+        
+        btnCancelImport.addEventListener('click', () => {
+            pnlQuickImport.classList.add('hidden');
+            txtQuickImport.value = '';
+        });
+        
+        btnProcessImport.addEventListener('click', () => {
+            const text = txtQuickImport.value.trim();
+            if(!text) return;
+            
+            const lines = text.split('\n');
+            const validLines = lines.filter(l => l.trim().length > 0);
+            if (validLines.length === 0) return;
+            
+            // Limpar a primeira linha se estiver vazia
+            if (tbodyItens.children.length === 1) {
+                const firstRow = tbodyItens.children[0];
+                const hasData = Array.from(firstRow.querySelectorAll('input')).some(inp => inp.value.trim() !== '' && !inp.classList.contains('inp-qtd'));
+                if (!hasData) tbodyItens.innerHTML = '';
+            }
+            
+            validLines.forEach(line => {
+                let nome = '', numero = '', tam = '', adic = '';
+                
+                // Separa por tabulação dupla ou espaços
+                const words = line.split(/[\t\s]+/).map(p => p.trim()).filter(p => p);
+                if (words.length > 0) {
+                    tam = words.pop();
+                    
+                    const possibleNum = words[words.length - 1];
+                    if(possibleNum && (!isNaN(possibleNum) || possibleNum.includes('-'))) {
+                        numero = words.pop();
+                    }
+                    nome = words.join(' ');
+                }
+                
+                let qtd = 1;
+                if (tam.includes('*') || tam.toUpperCase().includes('X')) {
+                    const separator = tam.includes('*') ? '*' : (tam.toUpperCase().includes('X') ? 'X' : 'x');
+                    const tParts = tam.toUpperCase().split(separator);
+                    if (tParts.length === 2 && !isNaN(tParts[0])) {
+                        qtd = parseInt(tParts[0]);
+                        tam = tParts[1].trim();
+                    }
+                }
+                
+                window.adicionarLinha({Nome: nome, Numero: numero, Tamanho: tam.toUpperCase(), Quantidade: qtd, Adicional: adic});
+            });
+            
+            pnlQuickImport.classList.add('hidden');
+            txtQuickImport.value = '';
+        });
+    }
+});

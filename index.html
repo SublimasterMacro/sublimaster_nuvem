@@ -134,9 +134,22 @@
                     <button id="btn-add-item" class="btn-secondary">
                         <i class="ph ph-list-plus"></i> Adicionar Linha
                     </button>
+                    <button id="btn-quick-import" class="btn-outline">
+                        <i class="ph ph-lightning"></i> Importação Rápida
+                    </button>
                     <button id="btn-clear-list" class="btn-outline">
                         <i class="ph ph-trash"></i> Limpar Lista
                     </button>
+                </div>
+                
+                <div id="quick-import-panel" class="hidden mt-3" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px dashed var(--accent);">
+                    <h4 style="margin-bottom: 10px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida (Colar Lista)</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 10px;">Cole sua lista bruta (WhatsApp/Excel). O sistema tentará extrair os dados de cada linha.</p>
+                    <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-main); font-family: monospace; resize: vertical;"></textarea>
+                    <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end;">
+                        <button id="btn-cancel-import" class="btn-outline" style="padding: 6px 12px; font-size: 0.9rem;">Cancelar</button>
+                        <button id="btn-process-import" class="btn-primary" style="padding: 6px 12px; font-size: 0.9rem;">Processar Linhas</button>
+                    </div>
                 </div>
 
                 <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
