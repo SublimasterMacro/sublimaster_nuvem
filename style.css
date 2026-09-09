@@ -372,7 +372,7 @@ button:active {
 .layout-sidebar-container {
     display: flex;
     gap: 24px;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
 .layout-main-content {

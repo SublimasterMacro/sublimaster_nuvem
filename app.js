@@ -1165,3 +1165,52 @@ if (btnQuickImport) {
         verificarIntencaoDoUsuario();
     });
 }
+
+// 12. NEW TOOLBAR BUTTONS LOGIC
+document.getElementById('btn-save-json')?.addEventListener('click', () => {
+    const itens = capturarItensDaTabela();
+    if(itens.length === 0) { alert('A tabela está vazia!'); return; }
+    const pedido = {
+        Cliente: document.getElementById('cliente').value,
+        Referencia: document.getElementById('referencia').value,
+        Itens: itens
+    };
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(pedido, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute('href', dataStr);
+    dlAnchorElem.setAttribute('download', 'Pedido_' + (pedido.Referencia || 'Sublimaster') + '.json');
+    dlAnchorElem.click();
+});
+
+document.getElementById('btn-open-json')?.addEventListener('click', () => {
+    document.getElementById('file-open-json').click();
+});
+
+document.getElementById('file-open-json')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const json = JSON.parse(e.target.result);
+            if (json.Cliente) document.getElementById('cliente').value = json.Cliente;
+            if (json.Referencia) document.getElementById('referencia').value = json.Referencia;
+            if (json.Itens && Array.isArray(json.Itens)) {
+                const tbody = document.getElementById('tbody-itens');
+                tbody.innerHTML = '';
+                json.Itens.forEach(item => adicionarLinha(item));
+                if(json.Itens.length === 0) {
+                    for(let i=0; i<10; i++) adicionarLinha();
+                }
+            }
+        } catch(err) {
+            alert('Erro ao ler JSON: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+});
+
+document.getElementById('btn-print-pdf')?.addEventListener('click', () => {
+    window.print();
+});
