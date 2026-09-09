@@ -51,10 +51,6 @@ body {
     min-height: 0;
 }
 
-.dashboard-container {
-    min-height: calc(100vh - 120px);
-}
-
 .flex-center {
     justify-content: center;
     align-items: center;
