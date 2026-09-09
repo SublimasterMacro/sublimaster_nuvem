@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=44">
+    <link rel="stylesheet" href="style.css?v=46">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -119,7 +119,8 @@
                     <option value="BLG1"></option><option value="BLG2"></option><option value="BLG3"></option><option value="BLG4"></option><option value="BLG5"></option>
                 </datalist>
 
-                <div style="margin-top: 20px; display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                <!-- Wrapper da tabela: só a tabela rola aqui dentro -->
+                <div class="table-scroll-wrapper" style="flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 20px;">
                     <div class="table-responsive">
                         <table id="tabela-itens">
                             <thead>
@@ -138,18 +139,19 @@
                             </tbody>
                         </table>
                     </div>
-                    
-                    <div class="action-buttons mt-3">
-                        <button id="btn-add-item" class="btn-secondary">
-                            <i class="ph ph-list-plus"></i> Adicionar Linha
-                        </button>
-                        <button id="btn-clear-list" class="btn-outline">
-                            <i class="ph ph-trash"></i> Limpar Lista
-                        </button>
-                    </div>
                 </div>
 
-                <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px;">
+                <!-- Botões FORA do wrapper de scroll - nunca serão cortados -->
+                <div class="action-buttons mt-3" style="flex-shrink: 0;">
+                    <button id="btn-add-item" class="btn-secondary">
+                        <i class="ph ph-list-plus"></i> Adicionar Linha
+                    </button>
+                    <button id="btn-clear-list" class="btn-outline">
+                        <i class="ph ph-trash"></i> Limpar Lista
+                    </button>
+                </div>
+
+                <div class="action-footer mt-5" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 15px; flex-shrink: 0;">
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
                         <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text; padding-left: 16px; padding-right: 44px;" autocomplete="off">
