@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=54">
+    <link rel="stylesheet" href="style.css?v=51">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -42,7 +42,7 @@
             
             <div class="input-group">
                 <i class="ph ph-key icon-input"></i>
-                <input type="text" id="codigo-acesso" placeholder="CÃ³digo da ConfecÃ§Ã£o" autocomplete="off">
+                <input type="text" id="codigo-acesso" placeholder="Código da Confecção" autocomplete="off">
             </div>
             
             <button id="btn-login" class="btn-primary btn-lg mt-4">
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <!-- Dashboard (Oculto atÃ© logar) -->
+    <!-- Dashboard (Oculto até logar) -->
     <div id="dashboard-screen" class="screen hidden">
         <header class="glass-header">
             <div class="header-content" style="flex-direction: column; align-items: stretch; gap: 4px;">
@@ -67,23 +67,23 @@
                         <span>Sair</span>
                     </button>
                 </div>
-                <!-- Abas de navegaÃ§Ã£o -->
+                <!-- Abas de navegação -->
                 <div class="admin-tabs">
                     <button class="tab-btn active" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart"></i> Planilha de Pedido</button>
-                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise"></i> HistÃ³rico de Pedidos</button>
+                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Pedidos</button>
                     <button class="tab-btn" onclick="switchTab('tab-dashboard')"><i class="ph ph-chart-bar"></i> Dashboard</button>
                 </div>
             </div>
         </header>
         
         <main class="dashboard-container">
-            <!-- ABA 1: PEDIDOS INTERNOS E HISTÃ“RICO -->
+            <!-- ABA 1: PEDIDOS INTERNOS E HISTÓRICO -->
             <div id="tab-pedidos" class="tab-content" style="display: none;">
             <!-- Novo Pedido -->
             <div class="layout-sidebar-container slide-up">
                 <div class="layout-main-content main-card">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                        <h3><i class="ph ph-table text-accent"></i> Planilha de DigitaÃ§Ã£o</h3>
+                        <h3><i class="ph ph-table text-accent"></i> Planilha de Digitação</h3>
                         <div class="action-buttons" style="margin-top: 0;">
                             <button id="btn-save-csv" class="btn-blue"><i class="ph ph-file-csv"></i> Salvar CSV</button>
                             <button id="btn-open-csv" class="btn-dark"><i class="ph ph-folder-open"></i> Abrir CSV</button>
@@ -94,11 +94,11 @@
                 <div class="flex-row">
                     <div class="input-group" style="flex: 1; margin: 0;">
                         <i class="ph ph-hash icon-input"></i>
-                        <input type="text" id="referencia" placeholder="Ref. / NÂº (Opcional)">
+                        <input type="text" id="referencia" placeholder="Ref. / Nº (Opcional)">
                     </div>
                     <div class="input-group" style="flex: 2; margin: 0;">
                         <i class="ph ph-user icon-input"></i>
-                        <input type="text" id="cliente" placeholder="Nome do Cliente (Ex: Time Ãguia)">
+                        <input type="text" id="cliente" placeholder="Nome do Cliente (Ex: Time Águia)">
                     </div>
                     <div class="input-group" id="grupo-validade" style="flex: 1; margin: 0;">
                         <i class="ph ph-hourglass icon-input"></i>
@@ -119,15 +119,15 @@
                     <option value="BLG1"></option><option value="BLG2"></option><option value="BLG3"></option><option value="BLG4"></option><option value="BLG5"></option>
                 </datalist>
 
-                <!-- Wrapper da tabela: sÃ³ a tabela rola aqui dentro -->
+                <!-- Wrapper da tabela: só a tabela rola aqui dentro -->
                 <div class="table-scroll-wrapper">
                     <div class="table-responsive">
                         <table id="tabela-itens">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px; text-align: center; color: var(--text-hint);">NÂº</th>
+                                    <th style="width: 40px; text-align: center; color: var(--text-hint);">Nº</th>
                                     <th style="width: 35%; min-width: 180px;">Nome</th>
-                                    <th style="width: 12%; min-width: 80px;">NÃºmero</th>
+                                    <th style="width: 12%; min-width: 80px;">Número</th>
                                     <th style="width: 25%; min-width: 140px;">Adicional</th>
                                     <th style="width: 18%; min-width: 100px;">Tamanho</th>
                                     <th style="width: 10%; min-width: 60px;">Qtd</th>
@@ -135,13 +135,13 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody-itens">
-                                <!-- Itens vÃ£o brotar aqui -->
+                                <!-- Itens vão brotar aqui -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- BotÃµes FORA do wrapper de scroll - nunca serÃ£o cortados -->
+                <!-- Botões FORA do wrapper de scroll - nunca serão cortados -->
                 <div class="action-buttons" style="flex-shrink: 0; margin-top: 10px;">
                     <button id="btn-add-item" class="btn-secondary">
                         <i class="ph ph-list-plus"></i> Adicionar Linha
@@ -155,18 +155,18 @@
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
                         <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text; padding-left: 16px; padding-right: 44px;" autocomplete="off">
-                        <!-- Ãcone calendÃ¡rio visual -->
+                        <!-- Ícone calendário visual -->
                         <div style="position:absolute; right:12px; top:50%; transform:translateY(-50%); display:flex; align-items:center; color:var(--text-hint); font-size:18px; pointer-events:none;">
                             <i class="ph ph-calendar-blank"></i>
                         </div>
-                        <!-- Input nativo invisÃ­vel sobreposto ao Ã­cone (funciona no iOS sem precisar de JS para abrir) -->
+                        <!-- Input nativo invisível sobreposto ao ícone (funciona no iOS sem precisar de JS para abrir) -->
                         <input type="date" id="date-picker-hidden" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); opacity:0; width:32px; height:32px; cursor:pointer; margin:0; padding:0; border:none; z-index:10;" onchange="(function(){var v=document.getElementById('date-picker-hidden').value; if(v){var p=v.split('-'); document.getElementById('data-entrega').value=p[2]+'/'+p[1]+'/'+p[0];}})()">
                     </div>
                     <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2;">
                         <p id="save-msg" class="msg-success mr-3"></p>
                         <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link" style="height:50px;">
                             <i class="ph ph-link"></i>
-                            <span>Gerar Link Ãšnico</span>
+                            <span>Gerar Link Único</span>
                         </button>
                     </div>
                 </div>
@@ -174,13 +174,13 @@
 
                 <div class="layout-sidebar">
                     <div id="quick-import-panel" style="display: flex; flex-direction: column; height: 100%; background: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-                        <h4 style="margin-bottom: 12px; color: var(--accent);"><i class="ph ph-lightning"></i> ImportaÃ§Ã£o RÃ¡pida</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 16px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairÃ¡ os dados automaticamente.</p>
-                        <textarea id="quick-import-text" placeholder="JoÃ£o 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 250px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: none; flex-grow: 1;"></textarea>
+                        <h4 style="margin-bottom: 12px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 16px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairá os dados automaticamente.</p>
+                        <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 250px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: none; flex-grow: 1;"></textarea>
                         
                         <div style="background: rgba(37, 99, 235, 0.1); border-left: 4px solid var(--accent); padding: 12px; border-radius: 4px; display: flex; align-items: flex-start; gap: 12px; margin-top: 15px;">
                             <i class="ph-fill ph-info" style="color: var(--accent); font-size: 24px; margin-top: 2px;"></i>
-                            <span style="font-size: 0.85rem; color: var(--text-hint); line-height: 1.4;">A ImportaÃ§Ã£o RÃ¡pida pode cometer erros, portanto, verifique os resultados cuidadosamente.</span>
+                            <span style="font-size: 0.85rem; color: var(--text-hint); line-height: 1.4;">A Importação Rápida pode cometer erros, portanto, verifique os resultados cuidadosamente.</span>
                         </div>
                         
                         <div style="display: flex; gap: 10px; margin-top: 15px; flex-direction: column;">
@@ -195,14 +195,14 @@
             
             </div> <!-- Fim tab-pedidos -->
 
-            <!-- ABA 2: HISTÃ“RICO DE PEDIDOS -->
+            <!-- ABA 2: HISTÓRICO DE PEDIDOS -->
             <div id="tab-historico" class="tab-content" style="display: none;">
                 <div class="history-card slide-up">
                     <div class="card-header border-bottom mb-3">
-                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> HistÃ³rico de Pedidos Salvos</h3>
+                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos Salvos</h3>
                     </div>
                     <ul id="lista-pedidos" class="order-list">
-                        <!-- HistÃ³rico via JS -->
+                        <!-- Histórico via JS -->
                     </ul>
                 </div>
             </div> <!-- Fim tab-historico -->
@@ -222,21 +222,21 @@
                         <div class="dash-kpi-icon" style="background: rgba(77,166,255,0.15); color: #4da6ff;"><i class="ph-fill ph-gear"></i></div>
                         <div class="dash-kpi-body">
                             <span class="dash-kpi-value" id="kpi-producao">0</span>
-                            <span class="dash-kpi-label">Em ProduÃ§Ã£o</span>
+                            <span class="dash-kpi-label">Em Produção</span>
                         </div>
                     </div>
                     <div class="glass-panel dash-kpi-card">
                         <div class="dash-kpi-icon" style="background: rgba(0,179,126,0.15); color: #00B37E;"><i class="ph-fill ph-check-circle"></i></div>
                         <div class="dash-kpi-body">
                             <span class="dash-kpi-value" id="kpi-concluidos">0</span>
-                            <span class="dash-kpi-label">ConcluÃ­dos</span>
+                            <span class="dash-kpi-label">Concluídos</span>
                         </div>
                     </div>
                     <div class="glass-panel dash-kpi-card">
                         <div class="dash-kpi-icon" style="background: rgba(179,102,255,0.15); color: #b366ff;"><i class="ph-fill ph-t-shirt"></i></div>
                         <div class="dash-kpi-body">
                             <span class="dash-kpi-value" id="kpi-pecas-total">0</span>
-                            <span class="dash-kpi-label">PeÃ§as no MÃªs</span>
+                            <span class="dash-kpi-label">Peças no Mês</span>
                         </div>
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                 <!-- Alertas de Prazo -->
                 <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;" id="dash-alertas-card">
                     <div class="card-header border-bottom mb-3">
-                        <h3><i class="ph ph-warning-circle" style="color: var(--error);"></i> Prazos PrÃ³ximos</h3>
+                        <h3><i class="ph ph-warning-circle" style="color: var(--error);"></i> Prazos Próximos</h3>
                     </div>
                     <div id="dash-alertas" style="font-size: 0.95rem;">
                         <p style="color: var(--text-hint);">Carregando...</p>
@@ -283,6 +283,6 @@
         </footer>
     </div>
 
-    <script src="app.js?v=110"></script>
+    <script src="app.js?v=107"></script>
 </body>
 </html>
