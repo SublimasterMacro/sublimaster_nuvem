@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
     <!-- Icons (Phosphor Icons - clean and modern) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    <link rel="stylesheet" href="style.css?v=51">
+    <link rel="stylesheet" href="style.css?v=54">
     <!-- Importando o SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -23,52 +23,37 @@
             document.documentElement.classList.add('has-session');
         }
     </script>
-    <!-- Nosso estilo principal e animacoes -->
     <style>
-        /* As animações originais que dão o efeito "Sublimaster" foram movidas para style.css */
-        
-        /* Ajuste fino para a listagem na importação rápida para não quebrar layout */
-        textarea::placeholder {
-            color: #94a3b8;
-            opacity: 1;
-        }
+        html.has-session #login-screen { display: none !important; }
+        html.has-session #dashboard-screen { display: flex !important; opacity: 0.5; pointer-events: none; }
     </style>
 </head>
-<body class="dark-theme">
-    
-    <!-- Background Animated (O mesmo do desktop para familiaridade) -->
+<body>
     <div class="bg-animated"></div>
-    <div class="glass-overlay"></div>
 
-    <!-- Login Screen -->
-    <div id="login-screen" class="screen">
-        <div class="login-card slide-up">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <i class="ph-fill ph-cloud-check text-accent" style="font-size: 48px;"></i>
-                <h2 class="gradient-text" style="font-size: 24px; margin-top: 8px;">Sublimaster Nuvem</h2>
-                <p style="color: var(--text-hint); font-size: 0.9rem; margin-top: 4px;">Acesso ao Portal de Digitação</p>
+    <!-- Tela de Login -->
+    <div id="login-screen" class="screen flex-center">
+        <div class="glass-panel login-box">
+            <div class="logo-container">
+                <i class="ph ph-cloud-arrow-up text-accent" style="font-size: 48px; margin-bottom: 10px;"></i>
+                <h1 class="gradient-text">Sublimaster Nuvem</h1>
+                <p class="subtitle">Portal Exclusivo do Cliente</p>
             </div>
             
-            <div id="login-error" class="msg-error" style="display: none; margin-bottom: 16px;">
-                Código de acesso inválido.
-            </div>
-
             <div class="input-group">
-                <i class="ph ph-lock icon-input"></i>
-                <input type="password" id="input-codigo" placeholder="Digite o código de acesso" autofocus>
+                <i class="ph ph-key icon-input"></i>
+                <input type="text" id="codigo-acesso" placeholder="CÃ³digo da ConfecÃ§Ã£o" autocomplete="off">
             </div>
             
-            <button id="btn-login" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
-                <span>Acessar</span>
-                <i class="ph ph-arrow-right"></i>
+            <button id="btn-login" class="btn-primary btn-lg mt-4">
+                <span>Acessar Painel</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </button>
-            <p style="text-align: center; font-size: 0.75rem; color: var(--text-hint); margin-top: 24px; opacity: 0.7;">
-                Módulo Nuvem Integrado v1.0
-            </p>
+            <p id="login-msg" class="msg-error mt-3"></p>
         </div>
     </div>
 
-    <!-- Dashboard (Oculto até logar) -->
+    <!-- Dashboard (Oculto atÃ© logar) -->
     <div id="dashboard-screen" class="screen hidden">
         <header class="glass-header">
             <div class="header-content" style="flex-direction: column; align-items: stretch; gap: 4px;">
@@ -82,23 +67,23 @@
                         <span>Sair</span>
                     </button>
                 </div>
-                <!-- Abas de navegação -->
+                <!-- Abas de navegaÃ§Ã£o -->
                 <div class="admin-tabs">
                     <button class="tab-btn active" onclick="switchTab('tab-pedidos')"><i class="ph ph-shopping-cart"></i> Planilha de Pedido</button>
-                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Pedidos</button>
+                    <button class="tab-btn" onclick="switchTab('tab-historico')"><i class="ph ph-clock-counter-clockwise"></i> HistÃ³rico de Pedidos</button>
                     <button class="tab-btn" onclick="switchTab('tab-dashboard')"><i class="ph ph-chart-bar"></i> Dashboard</button>
                 </div>
             </div>
         </header>
         
         <main class="dashboard-container">
-            <!-- ABA 1: PEDIDOS INTERNOS E HISTÓRICO -->
+            <!-- ABA 1: PEDIDOS INTERNOS E HISTÃ“RICO -->
             <div id="tab-pedidos" class="tab-content" style="display: none;">
             <!-- Novo Pedido -->
             <div class="layout-sidebar-container slide-up">
                 <div class="layout-main-content main-card">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                        <h3><i class="ph ph-table text-accent"></i> Planilha de Digitação</h3>
+                        <h3><i class="ph ph-table text-accent"></i> Planilha de DigitaÃ§Ã£o</h3>
                         <div class="action-buttons" style="margin-top: 0;">
                             <button id="btn-save-csv" class="btn-blue"><i class="ph ph-file-csv"></i> Salvar CSV</button>
                             <button id="btn-open-csv" class="btn-dark"><i class="ph ph-folder-open"></i> Abrir CSV</button>
@@ -109,11 +94,11 @@
                 <div class="flex-row">
                     <div class="input-group" style="flex: 1; margin: 0;">
                         <i class="ph ph-hash icon-input"></i>
-                        <input type="text" id="referencia" placeholder="Ref. / Nº (Opcional)">
+                        <input type="text" id="referencia" placeholder="Ref. / NÂº (Opcional)">
                     </div>
                     <div class="input-group" style="flex: 2; margin: 0;">
                         <i class="ph ph-user icon-input"></i>
-                        <input type="text" id="cliente" placeholder="Nome do Cliente (Ex: Time Águia)">
+                        <input type="text" id="cliente" placeholder="Nome do Cliente (Ex: Time Ãguia)">
                     </div>
                     <div class="input-group" id="grupo-validade" style="flex: 1; margin: 0;">
                         <i class="ph ph-hourglass icon-input"></i>
@@ -134,15 +119,15 @@
                     <option value="BLG1"></option><option value="BLG2"></option><option value="BLG3"></option><option value="BLG4"></option><option value="BLG5"></option>
                 </datalist>
 
-                <!-- Wrapper da tabela: só a tabela rola aqui dentro -->
+                <!-- Wrapper da tabela: sÃ³ a tabela rola aqui dentro -->
                 <div class="table-scroll-wrapper">
                     <div class="table-responsive">
                         <table id="tabela-itens">
                             <thead>
                                 <tr>
-                                    <th style="width: 40px; text-align: center; color: var(--text-hint);">Nº</th>
+                                    <th style="width: 40px; text-align: center; color: var(--text-hint);">NÂº</th>
                                     <th style="width: 35%; min-width: 180px;">Nome</th>
-                                    <th style="width: 12%; min-width: 80px;">Número</th>
+                                    <th style="width: 12%; min-width: 80px;">NÃºmero</th>
                                     <th style="width: 25%; min-width: 140px;">Adicional</th>
                                     <th style="width: 18%; min-width: 100px;">Tamanho</th>
                                     <th style="width: 10%; min-width: 60px;">Qtd</th>
@@ -150,13 +135,13 @@
                                 </tr>
                             </thead>
                             <tbody id="tbody-itens">
-                                <!-- Itens vão brotar aqui -->
+                                <!-- Itens vÃ£o brotar aqui -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Botões FORA do wrapper de scroll - nunca serão cortados -->
+                <!-- BotÃµes FORA do wrapper de scroll - nunca serÃ£o cortados -->
                 <div class="action-buttons" style="flex-shrink: 0; margin-top: 10px;">
                     <button id="btn-add-item" class="btn-secondary">
                         <i class="ph ph-list-plus"></i> Adicionar Linha
@@ -170,32 +155,32 @@
                     <div class="input-group" style="margin: 0; min-width: 200px; flex: 1; max-width: 250px; position: relative;">
                         <span style="position: absolute; top: -10px; left: 16px; background: #29292e; padding: 0 6px; font-size: 11px; color: var(--text-hint); border-radius: 4px; font-weight: 500;">Data de Entrega</span>
                         <input type="text" id="data-entrega" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" title="Data de Entrega" style="cursor: text; padding-left: 16px; padding-right: 44px;" autocomplete="off">
-                        <!-- Ícone calendário visual -->
+                        <!-- Ãcone calendÃ¡rio visual -->
                         <div style="position:absolute; right:12px; top:50%; transform:translateY(-50%); display:flex; align-items:center; color:var(--text-hint); font-size:18px; pointer-events:none;">
                             <i class="ph ph-calendar-blank"></i>
                         </div>
-                        <!-- Input nativo invisível sobreposto ao ícone (funciona no iOS sem precisar de JS para abrir) -->
+                        <!-- Input nativo invisÃ­vel sobreposto ao Ã­cone (funciona no iOS sem precisar de JS para abrir) -->
                         <input type="date" id="date-picker-hidden" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); opacity:0; width:32px; height:32px; cursor:pointer; margin:0; padding:0; border:none; z-index:10;" onchange="(function(){var v=document.getElementById('date-picker-hidden').value; if(v){var p=v.split('-'); document.getElementById('data-entrega').value=p[2]+'/'+p[1]+'/'+p[0];}})()">
                     </div>
                     <div style="display: flex; align-items: center; justify-content: flex-end; flex: 2;">
                         <p id="save-msg" class="msg-success mr-3"></p>
                         <button id="btn-salvar" class="btn-primary btn-glow" data-modo="link" style="height:50px;">
                             <i class="ph ph-link"></i>
-                            <span>Gerar Link Único</span>
+                            <span>Gerar Link Ãšnico</span>
                         </button>
                     </div>
                 </div>
-                </div> <!-- Fim card form -->
+                </div> <!-- Fim Main Content / Card -->
 
                 <div class="layout-sidebar">
                     <div id="quick-import-panel" style="display: flex; flex-direction: column; height: 100%; background: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-                        <h4 style="margin-bottom: 12px; color: var(--accent);"><i class="ph ph-lightning"></i> Importação Rápida</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 16px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairá os dados automaticamente.</p>
-                        <textarea id="quick-import-text" placeholder="João 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 250px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: none; flex-grow: 1;"></textarea>
+                        <h4 style="margin-bottom: 12px; color: var(--accent);"><i class="ph ph-lightning"></i> ImportaÃ§Ã£o RÃ¡pida</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-hint); margin-bottom: 16px;">Cole sua lista bruta (WhatsApp/Excel). O sistema extrairÃ¡ os dados automaticamente.</p>
+                        <textarea id="quick-import-text" placeholder="JoÃ£o 10 M&#10;Pedro 7 G&#10;10*M..." style="width: 100%; height: 250px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-family: monospace; resize: none; flex-grow: 1;"></textarea>
                         
                         <div style="background: rgba(37, 99, 235, 0.1); border-left: 4px solid var(--accent); padding: 12px; border-radius: 4px; display: flex; align-items: flex-start; gap: 12px; margin-top: 15px;">
                             <i class="ph-fill ph-info" style="color: var(--accent); font-size: 24px; margin-top: 2px;"></i>
-                            <span style="font-size: 0.85rem; color: var(--text-hint); line-height: 1.4;">A Importação Rápida pode cometer erros, portanto, verifique os resultados cuidadosamente.</span>
+                            <span style="font-size: 0.85rem; color: var(--text-hint); line-height: 1.4;">A ImportaÃ§Ã£o RÃ¡pida pode cometer erros, portanto, verifique os resultados cuidadosamente.</span>
                         </div>
                         
                         <div style="display: flex; gap: 10px; margin-top: 15px; flex-direction: column;">
@@ -204,72 +189,64 @@
                     </div>
                 </div> <!-- Fim Sidebar -->
             </div> <!-- Fim container split -->
-            </div> <!-- Fim tab-pedidos -->
             
-            <!-- ABA 2: HISTÓRICO -->
-            <div id="tab-historico" class="tab-content" style="display: none;">
-                <div class="history-card slide-up" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                    <div class="card-header" style="justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Histórico de Pedidos e Links</h3>
-                        
-                        <!-- Barra de Pesquisa Simplificada -->
-                        <div class="input-group" style="margin: 0; min-width: 250px;">
-                            <i class="ph ph-magnifying-glass icon-input"></i>
-                            <input type="text" id="search-history" placeholder="Buscar cliente ou ref...">
-                        </div>
-                    </div>
+            <!-- Hidden File Input for CSV -->
+            <input type="file" id="file-open-csv" accept=".csv" style="display: none;">
+            
+            </div> <!-- Fim tab-pedidos -->
 
-                    <!-- Layout em Grid (Cards) para Mobile e Desktop -->
-                    <div id="historico-grid" style="flex: 1; overflow-y: auto; padding-right: 5px; min-height: 200px;">
-                        <p style="color: var(--text-hint);">Carregando...</p>
+            <!-- ABA 2: HISTÃ“RICO DE PEDIDOS -->
+            <div id="tab-historico" class="tab-content" style="display: none;">
+                <div class="history-card slide-up">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> HistÃ³rico de Pedidos Salvos</h3>
                     </div>
+                    <ul id="lista-pedidos" class="order-list">
+                        <!-- HistÃ³rico via JS -->
+                    </ul>
                 </div>
             </div> <!-- Fim tab-historico -->
 
             <!-- ABA 3: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content" style="display: none;">
-                
-                <!-- Cards de KPI -->
+                <!-- KPI Cards -->
                 <div class="dash-kpi-row slide-up">
-                    <div class="dash-kpi-card">
-                        <div class="dash-kpi-icon"><i class="ph ph-shopping-bag"></i></div>
-                        <div>
-                            <div class="dash-kpi-label">Total de Pedidos</div>
-                            <div class="dash-kpi-value" id="kpi-total-pedidos">0</div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(251,169,76,0.15); color: #FBA94C;"><i class="ph-fill ph-clock"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-pendentes">0</span>
+                            <span class="dash-kpi-label">Pendentes</span>
                         </div>
                     </div>
-                    <div class="dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><i class="ph ph-check-circle"></i></div>
-                        <div>
-                            <div class="dash-kpi-label">Concluídos</div>
-                            <div class="dash-kpi-value" id="kpi-concluidos">0</div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(77,166,255,0.15); color: #4da6ff;"><i class="ph-fill ph-gear"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-producao">0</span>
+                            <span class="dash-kpi-label">Em ProduÃ§Ã£o</span>
                         </div>
                     </div>
-                    <div class="dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(234, 179, 8, 0.1); color: #eab308;"><i class="ph ph-clock"></i></div>
-                        <div>
-                            <div class="dash-kpi-label">Em Produção</div>
-                            <div class="dash-kpi-value" id="kpi-producao">0</div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(0,179,126,0.15); color: #00B37E;"><i class="ph-fill ph-check-circle"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-concluidos">0</span>
+                            <span class="dash-kpi-label">ConcluÃ­dos</span>
                         </div>
                     </div>
-                    <div class="dash-kpi-card">
-                        <div class="dash-kpi-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;"><i class="ph ph-t-shirt"></i></div>
-                        <div>
-                            <div class="dash-kpi-label">Total de Peças</div>
-                            <div class="dash-kpi-value" id="kpi-total-pecas">0</div>
+                    <div class="glass-panel dash-kpi-card">
+                        <div class="dash-kpi-icon" style="background: rgba(179,102,255,0.15); color: #b366ff;"><i class="ph-fill ph-t-shirt"></i></div>
+                        <div class="dash-kpi-body">
+                            <span class="dash-kpi-value" id="kpi-pecas-total">0</span>
+                            <span class="dash-kpi-label">PeÃ§as no MÃªs</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Histórico Recente no Dashboard -->
-                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;">
-                    <div class="card-header border-bottom mb-3" style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3><i class="ph ph-clock-counter-clockwise text-accent"></i> Pedidos Recentes</h3>
-                        <button class="btn-outline" onclick="switchTab('tab-historico')" style="padding: 6px 12px; font-size: 0.8rem;">
-                            Ver Todos <i class="ph ph-arrow-right"></i>
-                        </button>
+                <!-- Alertas de Prazo -->
+                <div class="glass-panel main-card mt-4 slide-up" style="animation-delay: 0.1s;" id="dash-alertas-card">
+                    <div class="card-header border-bottom mb-3">
+                        <h3><i class="ph ph-warning-circle" style="color: var(--error);"></i> Prazos PrÃ³ximos</h3>
                     </div>
-                    <div id="dash-recent-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div id="dash-alertas" style="font-size: 0.95rem;">
                         <p style="color: var(--text-hint);">Carregando...</p>
                     </div>
                 </div>
@@ -288,27 +265,24 @@
         <!-- App Footer -->
         <footer class="app-footer">
             <!-- Esquerda: Status -->
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="status-indicator">
-                    <span id="sync-dot" class="status-dot offline"></span>
-                    <span id="sync-text">Desconectado</span>
-                </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent-glow); animation: pulse 2s infinite;"></span>
+                <span style="font-weight: 500; letter-spacing: 0.5px;">Sistema Online</span>
             </div>
-
+            
             <!-- Centro: Copyright -->
-            <div style="opacity: 0.5;">
+            <div style="font-weight: 400; opacity: 0.7;">
                 &copy; 2026 Sublimaster
             </div>
-
-            <!-- Direita: Ajuda/Licença -->
-            <div class="footer-suporte" style="display: flex; gap: 16px;">
-                <a href="#" style="color: var(--text-hint); text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                    <i class="ph ph-headset"></i> Suporte
-                </a>
+            
+            <!-- Direita: Suporte (esconde no mobile) -->
+            <div class="footer-suporte" style="display: flex; align-items: center; gap: 6px; opacity: 0.6; cursor: not-allowed;" title="Suporte em breve">
+                <i class="ph ph-headset" style="font-size: 1.1rem;"></i>
+                <span>Suporte</span>
             </div>
         </footer>
     </div>
 
-    <script src="app.js?v=108"></script>
+    <script src="app.js?v=110"></script>
 </body>
 </html>
